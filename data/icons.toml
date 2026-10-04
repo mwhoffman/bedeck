@@ -361,7 +361,6 @@ dir = ["custom-folder", "dark-blue"]
 "id_rsa" = "md-key"
 "indent.pro" = ["md-dots_hexagon", "yellow"]
 "index.theme" = "fa-paint_roller"
-"init.lua" = ["linux-neovim", "vim-green"]
 "inputrc" = "md-file_cog"
 "ionic.config.json" = ["dev-ionic", "green"]
 "ipf.rules" = ["md-file_cog", "blue"]

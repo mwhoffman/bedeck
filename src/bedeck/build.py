@@ -20,10 +20,22 @@ CATEGORIES = {
 def eza(icons: bedeck.icons.Icons) -> str:
   """The filenames and extensions sections of an eza theme. The icons have no
   style, so eza colors them like the file name."""
-  # eza matches directories by name in filenames too, so a directory's icon
-  # wins over that of a file with the same name.
+  # eza matches directories by name in filenames too, so it can't tell a file
+  # and a directory with the same name apart: leave those names out, so they
+  # get eza's built-in icons (which can). It matches directories by extension
+  # too, so a name with one of our extensions (e.g. .git) would get that icon
+  # instead: those keep the directory's.
+  # TODO: check if this can be fixed in eza.
+  names = icons["file"] | icons["dir"]
+  clashes = {
+    name
+    for name in icons["file"].keys() & icons["dir"].keys()
+    if name.rpartition(".")[2] not in icons["ext"] or "." not in name
+  }
   sections = {
-    "filenames": bedeck.icons.by_name(icons["file"] | icons["dir"]),
+    "filenames": bedeck.icons.by_name(
+      {name: icon for name, icon in names.items() if name not in clashes}
+    ),
     "extensions": icons["ext"],
   }
   lines = [f"# {HEADER}"]
