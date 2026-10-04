@@ -1,0 +1,29 @@
+[project]
+name = "bedeck"
+version = "0.1.0"
+description = "A tool for generating consistent CLI themes."
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+authors = [{name = "Matthew W. Hoffman"}]
+requires-python = ">=3.10"
+dependencies = [
+  "typer>=0.27.2",
+]
+
+[project.scripts]
+bedeck = "bedeck.cli:app"
+
+[dependency-groups]
+dev = [
+  "ruff",
+  "ty",
+]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv]
+# Should match the version requirements of uv_build above.
+required-version = ">=0.12,<0.13"

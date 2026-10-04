@@ -29,7 +29,7 @@ import urllib.request
 from typing import NoReturn
 
 
-ROOT = pathlib.Path(__file__).resolve().parent
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 ICONS = ROOT / "data/icons.txt"
 CACHE = pathlib.Path.home() / ".cache/cli-themes"
 

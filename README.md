@@ -1,3 +1,3 @@
-# cli-themes
+# bedeck
 
-Code for generating CLI themes.
+A tool for generating consistent CLI themes.
