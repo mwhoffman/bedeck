@@ -72,10 +72,17 @@ def bad_colors(section: str, colors: dict) -> list[str]:
   ]
 
 
-def load(icons: pathlib.Path, palette: pathlib.Path) -> Icons:
-  """Read an icons file and its palette: returns {section: {name: (glyph,
-  color)}}, with the sections in SECTIONS' order and each color as hex, from
-  the palette or else the icons file's extra colors."""
+def by_name(entries: dict) -> dict:
+  return dict(sorted(entries.items(), key=lambda entry: entry[0].lower()))
+
+
+def load(
+  icons: pathlib.Path, palette: pathlib.Path
+) -> tuple[dict[str, str], Icons]:
+  """Read an icons file and its palette: returns the colors, as {name: hex},
+  from the palette and then the icons file's extra ones, and the icons, as
+  {section: {name: (glyph, color)}} with the sections in SECTIONS' order and
+  their entries sorted by name."""
   data = read_toml(icons)
   sections = (*SECTIONS, "extra-colors")
   unknown = [
@@ -94,7 +101,7 @@ def load(icons: pathlib.Path, palette: pathlib.Path) -> Icons:
     raise Error(f"{palette}: expected a colors section")
   if bad := bad_colors("colors", theme):
     raise Error(f"errors in {palette}:\n  " + "\n  ".join(bad))
-  colors = extra | theme  # the palette's colors win
+  colors = {**theme, **extra, **theme}  # the palette's come first, and win
   names = glyphs()
 
   errors = bad_colors("extra-colors", extra)
@@ -102,11 +109,10 @@ def load(icons: pathlib.Path, palette: pathlib.Path) -> Icons:
   missing -= set(data.get("default", {}))
   errors += [f"default.{name}: missing" for name in sorted(missing)]
 
-  result: Icons = {}
+  result: Icons = {section: {} for section in SECTIONS}
   inherited = {}  # each default's color, for entries that don't give one
   for section in SECTIONS:
-    result[section] = {}
-    for name, value in data.get(section, {}).items():
+    for name, value in by_name(data.get(section, {})).items():
       match value:
         case [str() as icon, str() as color]:
           pass
@@ -120,14 +126,16 @@ def load(icons: pathlib.Path, palette: pathlib.Path) -> Icons:
       glyph = icon if len(icon) == 1 else names.get(icon)
       if glyph is None:
         errors.append(f"{section}.{name}: unknown icon {icon}")
-      if color is not None and color not in colors:
+      if color is None:
+        continue  # its default is missing or malformed: an error already
+      if color not in colors:
         errors.append(f"{section}.{name}: unknown color {color}")
-      if glyph is not None and color in colors:
-        result[section][name] = (glyph, colors[color])
+      elif glyph is not None:
+        result[section][name] = (glyph, color)
 
   if errors:
     raise Error(f"errors in {icons}:\n  " + "\n  ".join(errors))
-  return result
+  return colors, result
 
 
 def show(icons: pathlib.Path, palette: pathlib.Path) -> None:
@@ -135,16 +143,15 @@ def show(icons: pathlib.Path, palette: pathlib.Path) -> None:
   up across the sections."""
   # The glyph is followed by spaces since kitty only draws an icon wider than a
   # cell if it is.
+  colors, data = load(icons, palette)
   sections = {
     section: [
       rich.text.Text.assemble(
-        (glyph, color), "  ", LABELS.get(section, "{}").format(name)
+        (glyph, colors[color]), "  ", LABELS.get(section, "{}").format(name)
       )
-      for name, (glyph, color) in sorted(
-        entries.items(), key=lambda entry: entry[0].lower()
-      )
+      for name, (glyph, color) in entries.items()
     ]
-    for section, entries in load(icons, palette).items()
+    for section, entries in data.items()
     if entries
   }
   width = max(cell.cell_len for cells in sections.values() for cell in cells)
