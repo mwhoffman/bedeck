@@ -20,14 +20,18 @@ def main() -> None:
 def icons(
   icons: Annotated[
     pathlib.Path,
-    typer.Argument(exists=True, dir_okay=False, help="The icons file."),
+    typer.Option(
+      "--icons", "-i", exists=True, dir_okay=False, help="The icons file."
+    ),
   ],
   palette: Annotated[
     pathlib.Path,
-    typer.Argument(exists=True, dir_okay=False, help="The palette file."),
+    typer.Option(
+      "--palette", "-p", exists=True, dir_okay=False, help="The palette file."
+    ),
   ],
 ) -> None:
-  """Print the icons in ICONS, in their colors from PALETTE."""
+  """Print the icons in their colors from the palette."""
   try:
     bedeck.icons.show(icons, palette)
   except bedeck.icons.Error as error:
