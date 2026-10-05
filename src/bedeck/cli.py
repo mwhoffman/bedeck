@@ -6,6 +6,7 @@ from typing import Annotated
 import typer
 
 import bedeck.build
+import bedeck.errors
 import bedeck.icons
 
 
@@ -41,7 +42,7 @@ def icons(icons: Icons, palette: Palette) -> None:
   """Print the icons in their colors from the palette."""
   try:
     bedeck.icons.show(icons, palette)
-  except bedeck.icons.Error as error:
+  except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error
 
@@ -53,6 +54,6 @@ def build(
   """Build eza's and mini.icons' icon config."""
   try:
     bedeck.build.build(icons, palette, output)
-  except bedeck.icons.Error as error:
+  except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

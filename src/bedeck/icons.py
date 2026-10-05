@@ -2,13 +2,15 @@
 
 import json
 import pathlib
-import re
-import tomllib
 import urllib.request
+from typing import NamedTuple
 
 import rich.columns
 import rich.console
 import rich.text
+
+import bedeck.errors
+import bedeck.palette
 
 
 CACHE = pathlib.Path.home() / ".cache/bedeck"
@@ -31,11 +33,13 @@ DEFAULTS = {"dir": "dir", "file": "file", "ext": "file", "filetype": "file"}
 # How the names in a section are shown, if not as they are.
 LABELS = {"dir": "{}/", "ext": "*.{}"}
 
-Icons = dict[str, dict[str, tuple[str, str]]]
+
+class Icon(NamedTuple):
+  glyph: str
+  color: str  # the name of one of the icons' colors
 
 
-class Error(Exception):
-  """A problem with an icons or palette file, or with getting the glyphs."""
+Icons = dict[str, dict[str, Icon]]
 
 
 def glyphs() -> dict[str, str]:
@@ -46,7 +50,9 @@ def glyphs() -> dict[str, str]:
       with urllib.request.urlopen(GLYPHNAMES) as response:
         data = response.read()
     except OSError as error:
-      raise Error(f"couldn't download {GLYPHNAMES}: {error}") from error
+      raise bedeck.errors.BedeckError(
+        f"couldn't download {GLYPHNAMES}: {error}"
+      ) from error
     CACHE.mkdir(parents=True, exist_ok=True)
     cached.write_bytes(data)
   names = json.loads(cached.read_text(encoding="utf-8"))
@@ -55,35 +61,18 @@ def glyphs() -> dict[str, str]:
   }
 
 
-def read_toml(path: pathlib.Path) -> dict:
-  try:
-    with path.open("rb") as file:
-      return tomllib.load(file)
-  except tomllib.TOMLDecodeError as error:
-    raise Error(f"{path}: {error}") from error
-
-
-def bad_colors(section: str, colors: dict) -> list[str]:
-  """An error for each of a section's colors that isn't a hex color."""
-  return [
-    f"{section}.{name}: expected a color like #rrggbb"
-    for name, value in colors.items()
-    if not (isinstance(value, str) and re.fullmatch("#[0-9a-fA-F]{6}", value))
-  ]
-
-
 def by_name(entries: dict) -> dict:
   return dict(sorted(entries.items(), key=lambda entry: entry[0].lower()))
 
 
 def load(
-  icons: pathlib.Path, palette: pathlib.Path
+  icons: pathlib.Path, palette: dict[str, str]
 ) -> tuple[dict[str, str], Icons]:
-  """Read an icons file and its palette: returns the colors, as {name: hex},
-  from the palette and then the icons file's extra ones, and the icons, as
-  {section: {name: (glyph, color)}} with the sections in SECTIONS' order and
-  their entries sorted by name."""
-  data = read_toml(icons)
+  """Read an icons file, given its palette's colors: returns the icons'
+  colors, as {name: hex}, which are the palette's and then the icons file's
+  extra ones, and the icons, as {section: {name: Icon}} with the
+  sections in SECTIONS' order and their entries sorted by name."""
+  data = bedeck.palette.read_toml(icons)
   sections = (*SECTIONS, "extra-colors")
   unknown = [
     name
@@ -91,20 +80,15 @@ def load(
     if name not in sections or not isinstance(value, dict)
   ]
   if unknown:
-    raise Error(
+    raise bedeck.errors.BedeckError(
       f"{icons}: expected the sections {', '.join(sections)}, "
       f"not {', '.join(unknown)}"
     )
   extra = data.get("extra-colors", {})
-  theme = read_toml(palette).get("colors")
-  if not isinstance(theme, dict):
-    raise Error(f"{palette}: expected a colors section")
-  if bad := bad_colors("colors", theme):
-    raise Error(f"errors in {palette}:\n  " + "\n  ".join(bad))
-  colors = {**theme, **extra, **theme}  # the palette's come first, and win
+  colors = {**palette, **extra, **palette}  # the palette's come first, and win
   names = glyphs()
 
-  errors = bad_colors("extra-colors", extra)
+  errors = bedeck.palette.bad_colors("extra-colors", extra)
   missing = set(DEFAULTS.values()) | {"noext"}
   missing -= set(data.get("default", {}))
   errors += [f"default.{name}: missing" for name in sorted(missing)]
@@ -131,10 +115,12 @@ def load(
       if color not in colors:
         errors.append(f"{section}.{name}: unknown color {color}")
       elif glyph is not None:
-        result[section][name] = (glyph, color)
+        result[section][name] = Icon(glyph, color)
 
   if errors:
-    raise Error(f"errors in {icons}:\n  " + "\n  ".join(errors))
+    raise bedeck.errors.BedeckError(
+      f"errors in {icons}:\n  " + "\n  ".join(errors)
+    )
   return colors, result
 
 
@@ -143,7 +129,7 @@ def show(icons: pathlib.Path, palette: pathlib.Path) -> None:
   up across the sections."""
   # The glyph is followed by spaces since kitty only draws an icon wider than a
   # cell if it is.
-  colors, data = load(icons, palette)
+  colors, data = load(icons, bedeck.palette.load(palette))
   sections = {
     section: [
       rich.text.Text.assemble(
