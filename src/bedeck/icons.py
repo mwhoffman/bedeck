@@ -66,7 +66,8 @@ def by_name(entries: dict) -> dict:
 
 
 def load(
-  icons: pathlib.Path, palette: dict[str, str]
+  icons: pathlib.Path,
+  palette: dict[str, str],
 ) -> tuple[dict[str, str], Icons]:
   """Read an icons file, given its palette's colors: returns the icons'
   colors, as {name: hex}, which are the palette's and then the icons file's
@@ -124,7 +125,10 @@ def load(
   return colors, result
 
 
-def show(icons: pathlib.Path, palette: pathlib.Path) -> None:
+def show(
+  icons: pathlib.Path,
+  palette: pathlib.Path,
+) -> None:
   """Print each section's icons in their colors, wrapped into columns that line
   up across the sections."""
   # The glyph is followed by spaces since kitty only draws an icon wider than a

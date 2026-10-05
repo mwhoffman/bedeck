@@ -5,9 +5,9 @@ from typing import Annotated
 
 import typer
 
-import bedeck.build
 import bedeck.errors
 import bedeck.icons
+import bedeck.install
 
 
 Icons = Annotated[
@@ -22,12 +22,18 @@ Palette = Annotated[
     "--palette", "-p", exists=True, dir_okay=False, help="The palette file."
   ),
 ]
-Output = Annotated[
+Target = Annotated[
   pathlib.Path,
   typer.Option(
-    "--output", "-o", file_okay=False, help="The directory to write to."
+    "--target", "-t", file_okay=False, help="The directory to install under."
   ),
 ]
+Yes = Annotated[
+  bool,
+  typer.Option("--yes", "-y", help="Overwrite existing files without asking."),
+]
+
+HOME = pathlib.Path.home()
 
 app = typer.Typer(no_args_is_help=True, add_completion=True)
 
@@ -38,7 +44,10 @@ def main() -> None:
 
 
 @app.command()
-def icons(icons: Icons, palette: Palette) -> None:
+def icons(
+  icons: Icons,
+  palette: Palette,
+) -> None:
   """Print the icons in their colors from the palette."""
   try:
     bedeck.icons.show(icons, palette)
@@ -48,12 +57,15 @@ def icons(icons: Icons, palette: Palette) -> None:
 
 
 @app.command()
-def build(
-  icons: Icons, palette: Palette, output: Output = pathlib.Path("themes")
+def install(
+  icons: Icons,
+  palette: Palette,
+  target: Target = HOME,
+  yes: Yes = False,
 ) -> None:
-  """Build eza's and mini.icons' icon config."""
+  """Install the theme files, e.g. eza's theme and mini.icons' config."""
   try:
-    bedeck.build.build(icons, palette, output)
+    bedeck.install.install(icons, palette, target, yes)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

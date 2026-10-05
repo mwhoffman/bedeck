@@ -15,7 +15,10 @@ def read_toml(path: pathlib.Path) -> dict:
     raise bedeck.errors.BedeckError(f"{path}: {error}") from error
 
 
-def bad_colors(section: str, colors: dict) -> list[str]:
+def bad_colors(
+  section: str,
+  colors: dict,
+) -> list[str]:
   """An error for each of a section's colors that isn't a hex color."""
   return [
     f"{section}.{name}: expected a color like #rrggbb"
