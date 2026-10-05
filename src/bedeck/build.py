@@ -33,7 +33,7 @@ def lua_string(text: str) -> str:
 
 
 def build(icons: pathlib.Path, palette: pathlib.Path, output: pathlib.Path):
-  """Render each template (e.g. eza.yml.j2) to the output directory (as
+  """Render each template (e.g. eza.yml.jinja) to the output directory (as
   eza.yml). They all get the same context, and use what they need of it."""
   colors = bedeck.palette.load(palette)
   icon_colors, data = bedeck.icons.load(icons, colors)
@@ -54,6 +54,6 @@ def build(icons: pathlib.Path, palette: pathlib.Path, output: pathlib.Path):
   env.filters |= {"ord": ord, "lua_string": lua_string}
   output.mkdir(parents=True, exist_ok=True)
   for name in env.list_templates():
-    path = output / name.removesuffix(".j2")
+    path = output / name.removesuffix(".jinja")
     path.write_text(env.get_template(name).render(context), encoding="utf-8")
     print(f"Wrote {path}")
