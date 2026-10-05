@@ -8,8 +8,9 @@
 #
 # The sections are [dir], [file], [ext] and [filetype] (an nvim filetype), and
 # [default], which has the icons for files with an extension nothing knows
-# (file), files with no extension (noext) and directories (dir).
-# These should be eza's built-in ones, since its theme can't change them.
+# (file), files with no extension (noext) and directories (dir). eza's theme
+# can't change these, so eza keeps its built-in ones, which the file and noext
+# defaults match.
 
 # Colors the icons use that a palette may not have: the palette's color is used
 # if it has one of the same name.
@@ -22,63 +23,63 @@ violet = "#a78bfa"
 [default]
 file = ["fa-file", "plain"]
 noext = ["md-file_question", "plain"]
-dir = ["custom-folder", "dark-blue"]
+dir = ["md-folder", "dark-blue"]
 
 # Directories.
 [dir]
-".atom" = "dev-atom"
+".atom" = "md-folder_cog"
 ".cache" = "md-folder_clock"
-".config" = "custom-folder_config"
-".exercism" = "cod-bracket_dot"
-".git" = "custom-folder_git"
-".github" = "custom-folder_github"
-".idea" = "dev-intellij"
+".config" = "md-folder_cog"
+".exercism" = "md-folder_cog"
+".git" = "md-folder_wrench"
+".github" = "md-folder_cog"
+".idea" = "md-folder_cog"
 ".local" = "md-folder_account"
-".npm" = "custom-folder_npm"
-".opam" = "seti-ocaml"
-".rvm" = "cod-ruby"
+".npm" = "md-folder_wrench"
+".opam" = "md-folder_wrench"
+".rvm" = "md-folder_wrench"
 ".ssh" = "md-folder_key"
 ".Trash" = "fa-trash"
-".vim" = "custom-folder"
-".zsh_sessions" = "md-bash"
+".vim" = "md-folder"
+".zsh_sessions" = "md-folder_cog"
 "AppData" = "md-folder_account"
 "Applications" = "md-folder_play"
 "autoload" = "md-folder_settings"
 "bin" = "md-folder_play"
 "boot" = "md-folder_sync"
 "build" = "md-folder_wrench"
-"cabal" = "dev-haskell"
+"cabal" = "md-folder_wrench"
 "colors" = "md-folder_settings"
 "compiler" = "md-folder_settings"
-"config" = "custom-folder_config"
+"config" = "md-folder_cog"
 "Contacts" = "md-folder_account"
-"cron.d" = "custom-folder_config"
-"cron.daily" = "custom-folder_config"
-"cron.hourly" = "custom-folder_config"
-"cron.minutely" = "custom-folder_config"
-"cron.monthly" = "custom-folder_config"
-"cron.weekly" = "custom-folder_config"
+"cron.d" = "md-folder_cog"
+"cron.daily" = "md-folder_cog"
+"cron.hourly" = "md-folder_cog"
+"cron.minutely" = "md-folder_cog"
+"cron.monthly" = "md-folder_cog"
+"cron.weekly" = "md-folder_cog"
 "Desktop" = "fa-desktop"
 "dev" = "md-folder_wrench"
 "doc" = "md-folder_information"
 "docs" = "md-folder_information"
 "Documents" = "md-folder_text"
 "Downloads" = "md-folder_download"
-"etc" = "custom-folder_config"
+"etc" = "md-folder_cog"
 "Favorites" = "md-folder_star"
 "ftdetect" = "md-folder_settings"
 "ftplugin" = "md-folder_settings"
-"gradle" = "seti-gradle"
+"gradle" = "md-folder_wrench"
 "hidden" = "md-folder_hidden"
 "home" = "md-folder_home"
-"include" = "custom-folder_config"
+"include" = "md-folder_cog"
 "indent" = "md-folder_settings"
 "keymap" = "md-folder_settings"
 "lang" = "md-folder_settings"
 "lib" = "md-folder_text"
 "Library" = "md-folder_text"
 "lsp" = "md-folder_settings"
-"lua" = "custom-folder"
+"lua" = "md-folder"
 "Mail" = "md-email_outline"
 "media" = "md-folder_play"
 "mini.nvim" = "md-folder_star"
@@ -86,12 +87,12 @@ dir = ["custom-folder", "dark-blue"]
 "Movies" = "fa-video"
 "Music" = "fa-music"
 "Network" = "md-folder_network"
-"node_modules" = "custom-folder_npm"
-"npm_cache" = "custom-folder_npm"
-"nvim" = "custom-folder"
+"node_modules" = "md-folder_wrench"
+"npm_cache" = "md-folder_wrench"
+"nvim" = "md-folder"
 "opt" = "md-folder_plus"
 "pack" = "md-folder_settings"
-"pacman.d" = "custom-folder_config"
+"pacman.d" = "md-folder_cog"
 "pam.d" = "md-folder_key"
 "parser" = "md-folder_settings"
 "Pictures" = "fa-image"
@@ -122,8 +123,8 @@ dir = ["custom-folder", "dark-blue"]
 "var" = "md-folder_table"
 "Videos" = "fa-video"
 "Volumes" = "md-folder_multiple"
-"xbps.d" = "custom-folder_config"
-"xorg.conf.d" = "custom-folder_config"
+"xbps.d" = "md-folder_cog"
+"xorg.conf.d" = "md-folder_cog"
 
 # File names.
 [file]

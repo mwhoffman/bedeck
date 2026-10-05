@@ -23,7 +23,11 @@ def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
   # get eza's built-in icons (which can). It matches directories by extension
   # too, so a name with one of our extensions (e.g. .git) would get that icon
   # instead: those keep the directory's.
-  # TODO: check if this can be fixed in eza.
+  #
+  # A theme can't set the icon of a directory it has no entry for either, so
+  # those get eza's built-in ones (custom-folder, or fa-folder_open_o if it's
+  # empty) rather than our default.
+  # TODO: check if these can be fixed in eza.
   names = icons["file"] | icons["dir"]
   clashes = {
     name
