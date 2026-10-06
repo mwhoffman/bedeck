@@ -12,7 +12,7 @@ import bedeck.palette
 # Where each template is installed, relative to the target directory.
 TARGETS = {
   ".config/eza/theme.yml": "eza.yml.jinja",
-  ".config/nvim/lua/mini-icons.lua": "mini-icons.lua.jinja",
+  ".config/nvim/lua/bedeck/icons.lua": "nvim-icons.lua.jinja",
 }
 
 
