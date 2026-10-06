@@ -24,6 +24,10 @@ bright_white = "text"
 accent1 = "#d65d0e"
 bright_accent1 = "#fe8019"
 
+# A darker background than base, for secondary panes (gruvbox's hard contrast
+# background).
+mantle = "#1d2021"
+
 # The background, and four steps from it towards the text.
 base = "#282828"
 surface0 = "#3c3836"
