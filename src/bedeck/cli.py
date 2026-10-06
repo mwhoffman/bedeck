@@ -5,9 +5,9 @@ from typing import Annotated
 
 import typer
 
+import bedeck.build
 import bedeck.errors
 import bedeck.icons
-import bedeck.install
 
 
 Icons = Annotated[
@@ -22,18 +22,16 @@ Palette = Annotated[
     "--palette", "-p", exists=True, dir_okay=False, help="The palette file."
   ),
 ]
-Target = Annotated[
+Output = Annotated[
   pathlib.Path,
   typer.Option(
-    "--target", "-t", file_okay=False, help="The directory to install under."
+    "--output", "-o", file_okay=False, help="The directory to write to."
   ),
 ]
 Yes = Annotated[
   bool,
   typer.Option("--yes", "-y", help="Overwrite existing files without asking."),
 ]
-
-HOME = pathlib.Path.home()
 
 app = typer.Typer(no_args_is_help=True, add_completion=True)
 
@@ -57,15 +55,15 @@ def icons(
 
 
 @app.command()
-def install(
+def build(
   icons: Icons,
   palette: Palette,
-  target: Target = HOME,
+  output: Output,
   yes: Yes = False,
 ) -> None:
-  """Install the theme files, e.g. eza's theme and mini.icons' config."""
+  """Build the theme files, e.g. eza's theme and mini.icons' config."""
   try:
-    bedeck.install.install(icons, palette, target, yes)
+    bedeck.build.build(icons, palette, output, yes)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

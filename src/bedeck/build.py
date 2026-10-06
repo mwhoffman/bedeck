@@ -1,4 +1,4 @@
-"""Install the theme files, by rendering each of the package's templates."""
+"""Build the theme files, by rendering each of the package's templates."""
 
 import pathlib
 
@@ -7,13 +7,6 @@ import rich.prompt
 
 import bedeck.icons
 import bedeck.palette
-
-
-# Where each template is installed, relative to the target directory.
-TARGETS = {
-  ".config/eza/theme.yml": "eza.yml.jinja",
-  ".config/nvim/lua/bedeck/icons.lua": "nvim-icons.lua.jinja",
-}
 
 
 def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
@@ -44,15 +37,15 @@ def lua_string(text: str) -> str:
   return "'" + text.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
-def install(
+def build(
   icons: pathlib.Path,
   palette: pathlib.Path,
-  target: pathlib.Path,
+  output: pathlib.Path,
   yes: bool,
 ) -> None:
-  """Render each of TARGETS' templates and write it under the target directory,
-  asking before overwriting a file unless `yes`. The templates all get the same
-  context, and use what they need of it."""
+  """Render each template (e.g. eza.yml.jinja) to the output directory (as
+  eza.yml), asking before overwriting a file unless `yes`. They all get the
+  same context, and use what they need of it."""
   colors = bedeck.palette.load(palette)
   icon_colors, data = bedeck.icons.load(icons, colors)
   context = {
@@ -70,11 +63,12 @@ def install(
     undefined=jinja2.StrictUndefined,
   )
   env.filters |= {"ord": ord, "lua_string": lua_string}
-  # Render them all first, so a problem with one leaves nothing half installed.
+  # Render them all first, so a problem with one leaves nothing half built.
   files = {
-    target / path: env.get_template(name).render(context)
-    for path, name in TARGETS.items()
+    output / name.removesuffix(".jinja"): env.get_template(name).render(context)
+    for name in env.list_templates()
   }
+  output.mkdir(parents=True, exist_ok=True)
   for path, text in files.items():
     if path.exists():
       if path.read_bytes() == text.encode("utf-8"):
@@ -83,8 +77,5 @@ def install(
       if not yes and not rich.prompt.Confirm.ask(f"Overwrite {path}?"):
         print(f"Skipped {path}")
         continue
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # Written in place rather than renamed over, so a symlink (e.g. one of
-    # stow's) is written through and stays a symlink.
     path.write_text(text, encoding="utf-8")
     print(f"Wrote {path}")
