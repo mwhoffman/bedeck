@@ -5,10 +5,10 @@ polybar's colors, which its config.ini includes as its colors section.
 ; polybar colors, included by config.ini.
 
 [colors]
-background = {{ palette.base }}
-background-alt = {{ palette.blue }}
-foreground = {{ palette.text }}
-primary = {{ palette.blue }}
-secondary = {{ palette.bright_cyan }}
-disabled = {{ palette.overlay2 }}
-alert = {{ palette.bright_red }}
+background = {{ ui.background }}
+background-alt = {{ chrome.active }}
+foreground = {{ ui.text }}
+primary = {{ chrome.active }}
+disabled = {{ ui.text_dim }}
+alert = {{ ui.urgent }}
+alert-foreground = {{ chrome.text }}

@@ -1,10 +1,17 @@
-"""The palette: the named colors that everything is themed with."""
+"""The palette: the named colors that everything is themed with, and the roles
+which say what they're used for."""
 
 import pathlib
 import re
 import tomllib
+from typing import NamedTuple
 
 import bedeck.errors
+
+
+class Palette(NamedTuple):
+  colors: dict[str, str]  # {name: hex}
+  roles: dict[str, dict[str, str]]  # {group: {role: hex}}
 
 
 def read_toml(path: pathlib.Path) -> dict:
@@ -28,10 +35,12 @@ def bad_colors(
   ]
 
 
-def load(path: pathlib.Path) -> dict[str, str]:
-  """Read a palette file: returns its colors, as {name: hex}. A color can be
-  given as another color's name (e.g. black = "base") rather than as hex."""
-  colors = read_toml(path).get("colors")
+def load(path: pathlib.Path) -> Palette:
+  """Read a palette file: returns its colors and its roles, both as hex. A color
+  can be given as another color's name (e.g. black = "bg0") rather than as hex,
+  and a role (e.g. roles.ui.text) is given as a color's name."""
+  data = read_toml(path)
+  colors = data.get("colors")
   if not isinstance(colors, dict):
     raise bedeck.errors.BedeckError(f"{path}: expected a colors section")
   resolved = {}
@@ -43,6 +52,22 @@ def load(path: pathlib.Path) -> dict[str, str]:
       value = colors[value]
     resolved[name] = value
   expected = "a color like #rrggbb or another color's name"
-  if bad := bad_colors("colors", resolved, expected):
-    raise bedeck.errors.BedeckError(f"errors in {path}:\n  " + "\n  ".join(bad))
-  return resolved
+  errors = bad_colors("colors", resolved, expected)
+
+  roles = {}
+  for group, entries in data.get("roles", {}).items():
+    if not isinstance(entries, dict):
+      errors.append(f"roles.{group}: expected a section of roles")
+      continue
+    roles[group] = {}
+    for name, color in entries.items():
+      if isinstance(color, str) and color in resolved:
+        roles[group][name] = resolved[color]
+      else:
+        errors.append(f"roles.{group}.{name}: expected the name of a color")
+
+  if errors:
+    raise bedeck.errors.BedeckError(
+      f"errors in {path}:\n  " + "\n  ".join(errors)
+    )
+  return Palette(resolved, roles)

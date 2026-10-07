@@ -7,18 +7,19 @@ i3's colors, which its config includes: the colors as variables, and the client
 # in the config, since variables set in an included file can't be used by the
 # file which includes it.
 
-set $bg {{ palette.base }}
-set $fg {{ palette.text }}
-set $red {{ palette.red }}
-set $green {{ palette.green }}
-set $yellow {{ palette.yellow }}
-set $blue {{ palette.blue }}
-set $blue2 {{ palette.bright_blue }}
-set $purple {{ palette.magenta }}
-set $gray {{ palette.overlay2 }}
-set $darkgray {{ palette.mantle }}
+set $active1 {{ chrome.active }}
+set $active2 {{ chrome.active_bright }}
+set $inactive1 {{ chrome.inactive }}
+set $inactive2 {{ chrome.inactive_bright }}
+set $unfocused {{ chrome.unfocused }}
+set $text {{ chrome.text }}
+set $indicator {{ chrome.indicator }}
+set $urgent {{ ui.urgent }}
 
-client.focused $blue2 $blue $fg $purple $blue
-client.focused_inactive $darkgray $darkgray $gray $purple $darkgray
-client.unfocused $darkgray $darkgray $gray $purple $darkgray
-client.urgent $red $red $fg $red $red
+# The title bar's border, background and text, then the indicator and the
+# window's border. The title bars (shown in tabbed and stacked layouts) look
+# like kitty's tabs.
+client.focused $active2 $active1 $text $indicator $active1
+client.focused_inactive $inactive2 $inactive1 $text $indicator $unfocused
+client.unfocused $inactive2 $inactive1 $text $indicator $unfocused
+client.urgent $urgent $urgent $text $urgent $urgent

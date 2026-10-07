@@ -3,44 +3,90 @@
 [colors]
 # The 16 ANSI colors in order. gruvbox uses its background, text and greys for
 # black and white.
-black = "base"
+black = "bg0"
 red = "#cc241d"
 green = "#98971a"
 yellow = "#d79921"
 blue = "#458588"
 magenta = "#b16286"
 cyan = "#689d6a"
-white = "overlay2"
-bright_black = "overlay1"
+white = "fg3"
+bright_black = "fg4"
 bright_red = "#fb4934"
 bright_green = "#b8bb26"
 bright_yellow = "#fabd2f"
 bright_blue = "#83a598"
 bright_magenta = "#d3869b"
 bright_cyan = "#8ec07c"
-bright_white = "text"
+bright_white = "fg0"
 
 # Accents: colors the palette has beyond the ANSI ones. gruvbox's is orange.
 accent1 = "#d65d0e"
 bright_accent1 = "#fe8019"
 
-# A darker background than base, for secondary panes (gruvbox's hard contrast
-# background).
-mantle = "#1d2021"
+# The background (bg0), and four steps from it towards the text. bg_hard is a
+# darker background (gruvbox's hard contrast one).
+bg_hard = "#1d2021"
+bg0 = "#282828"
+bg1 = "#3c3836"
+bg2 = "#504945"
+bg3 = "#665c54"
+bg4 = "#7c6f64"
 
-# The background, and four steps from it towards the text.
-base = "#282828"
-surface0 = "#3c3836"
-surface1 = "#504945"
-surface2 = "#665c54"
-overlay0 = "#7c6f64"
+# The text (fg0), and four steps from it towards the background. fg_hard is a
+# brighter text.
+fg_hard = "#fbf1c7"
+fg0 = "#ebdbb2"
+fg1 = "#d5c4a1"
+fg2 = "#bdae93"
+fg3 = "#a89984"
+fg4 = "#928374"
 
-# The text, and four steps from it towards the background.
-text = "#ebdbb2"
-subtext1 = "#d5c4a1"
-subtext0 = "#bdae93"
-overlay2 = "#a89984"
-overlay1 = "#928374"
+# What the colors are used for. Each role is one of the colors above.
 
-# Emphasized text (unused for now).
-bright_text = "#fbf1c7"
+# The general interface.
+[roles.ui]
+background = "bg0"
+text = "fg0"
+text_dim = "fg3"
+text_faint = "fg4"
+highlight = "yellow"
+bright_highlight = "bright_yellow"
+urgent = "bright_yellow"
+alert = "red"
+url = "blue"
+cursor = "fg4"
+selection = "fg0"
+selection_text = "fg4"
+
+# Window-like things: tabs, window borders, bars.
+[roles.chrome]
+active = "blue"
+active_bright = "bright_blue"
+inactive = "bg4"
+inactive_bright = "fg3"
+unfocused = "bg_hard"
+text = "bg0"
+indicator = "magenta"
+
+# Kinds of file.
+[roles.file]
+directory = "blue"
+symlink = "bright_cyan"
+executable = "bright_green"
+special = "bright_red"
+archive = "bright_red"
+media = "bright_magenta"
+document = "bright_magenta"
+compiled = "yellow"
+temp = "bright_black"
+
+# Version control.
+[roles.git]
+added = "bright_green"
+modified = "yellow"
+deleted = "bright_red"
+untracked = "red"
+ahead = "green"
+behind = "magenta"
+branch = "bright_cyan"

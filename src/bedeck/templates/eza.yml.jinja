@@ -39,10 +39,10 @@ git:
   typechange: {foreground: Yellow}
   deleted: {foreground: LightRed}
 
-punctuation: {foreground: "{{ palette.overlay1 }}"}
-date: {foreground: "{{ palette.overlay1 }}"}
+punctuation: {foreground: "{{ ui.text_faint }}"}
+date: {foreground: "{{ ui.text_faint }}"}
 perms:
-  attribute: {foreground: "{{ palette.overlay1 }}"}
+  attribute: {foreground: "{{ ui.text_faint }}"}
 
 {% macro escape(glyph) -%}
 {% set code = glyph | ord -%}

@@ -5,6 +5,7 @@ import pathlib
 import jinja2
 import rich.prompt
 
+import bedeck.errors
 import bedeck.icons
 import bedeck.palette
 
@@ -46,15 +47,21 @@ def build(
   """Render each template (e.g. eza.yml.jinja) to the output directory (as
   eza.yml), asking before overwriting a file unless `yes`. They all get the
   same context, and use what they need of it."""
-  colors = bedeck.palette.load(palette)
+  colors, roles = bedeck.palette.load(palette)
   icon_colors, data = bedeck.icons.load(icons, colors)
   context = {
-    "palette": colors,
+    "colors": colors,
     # The palette's colors and the icons file's extra ones: for icons only.
     "icon_colors": icon_colors,
     "icons": data,
     "eza_filenames": eza_filenames(data),
   }
+  if reserved := roles.keys() & context.keys():
+    raise bedeck.errors.BedeckError(
+      f"{palette}: roles can't be called {', '.join(sorted(reserved))}"
+    )
+  # Each group of roles is a name of its own, e.g. ui.text.
+  context |= roles
   env = jinja2.Environment(
     loader=jinja2.PackageLoader("bedeck"),
     trim_blocks=True,

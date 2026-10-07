@@ -133,7 +133,7 @@ def show(
   up across the sections."""
   # The glyph is followed by spaces since kitty only draws an icon wider than a
   # cell if it is.
-  colors, data = load(icons, bedeck.palette.load(palette))
+  colors, data = load(icons, bedeck.palette.load(palette).colors)
   sections = {
     section: [
       rich.text.Text.assemble(
