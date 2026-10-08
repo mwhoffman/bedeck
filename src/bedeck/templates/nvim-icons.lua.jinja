@@ -60,7 +60,20 @@ function M.setup()
     callback = set_highlights,
   })
 
-  require("mini.icons").setup(config)
+  local mini = require("mini.icons")
+  mini.setup(config)
+
+  -- mini.icons uses a letter (the Nerd Font glyphs md-alpha_a to md-alpha_z) as
+  -- the icon of each filetype it has no real icon for, e.g. a D for dircolors.
+  -- Give those we have no icon for either our default one instead.
+  -- TODO: look into a better way to do this.
+  for _, name in ipairs(mini.list("filetype")) do
+    local code = vim.fn.char2nr((mini.get("filetype", name)))
+    if config.filetype[name] == nil and code >= 0xf0aee and code <= 0xf0b07 then
+      config.filetype[name] = config.default.filetype
+    end
+  end
+  mini.setup(config)
 end
 
 return M

@@ -11,9 +11,13 @@ import bedeck.icons
 
 
 Icons = Annotated[
-  pathlib.Path,
+  pathlib.Path | None,
   typer.Option(
-    "--icons", "-i", exists=True, dir_okay=False, help="The icons file."
+    "--icons",
+    "-i",
+    exists=True,
+    dir_okay=False,
+    help="A file of icons, to add to or replace bedeck's own.",
   ),
 ]
 Palette = Annotated[
@@ -43,8 +47,8 @@ def main() -> None:
 
 @app.command()
 def icons(
-  icons: Icons,
   palette: Palette,
+  icons: Icons = None,
 ) -> None:
   """Print the icons in their colors from the palette."""
   try:
@@ -56,9 +60,9 @@ def icons(
 
 @app.command()
 def build(
-  icons: Icons,
   palette: Palette,
   output: Output,
+  icons: Icons = None,
   yes: Yes = False,
 ) -> None:
   """Build the theme files, e.g. eza's theme and mini.icons' config."""

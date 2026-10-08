@@ -96,7 +96,7 @@ def git(color: bedeck.palette.Color) -> str:
 
 
 def build(
-  icons: pathlib.Path,
+  icons: pathlib.Path | None,
   palette: pathlib.Path,
   output: pathlib.Path,
   yes: bool,

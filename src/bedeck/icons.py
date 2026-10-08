@@ -13,6 +13,9 @@ import bedeck.errors
 import bedeck.palette
 
 
+# bedeck's own icons, which an icons file given to it adds to or replaces.
+ICONS = pathlib.Path(__file__).parent / "icons.toml"
+
 CACHE = pathlib.Path.home() / ".cache/bedeck"
 NERD_FONTS = "v3.5.1"  # the version of the installed fonts
 GLYPHNAMES = (
@@ -65,16 +68,9 @@ def by_name(entries: dict) -> dict:
   return dict(sorted(entries.items(), key=lambda entry: entry[0].lower()))
 
 
-def load(
-  icons: pathlib.Path,
-  palette: bedeck.palette.Palette,
-) -> tuple[dict[str, str], Icons]:
-  """Read an icons file, given its palette: returns the colors the icons can
-  have, as {name: hex}, and the icons, as {section: {name: Icon}} with the
-  sections in SECTIONS' order and their entries sorted by name. The colors are
-  the ANSI ones, the palette's file roles (e.g. file.media) and the icons file's
-  extra ones."""
-  data = bedeck.palette.read_toml(icons)
+def read(path: pathlib.Path) -> dict[str, dict]:
+  """Read an icons file, checking it only has the sections it can."""
+  data = bedeck.palette.read_toml(path)
   sections = (*SECTIONS, "extra-colors")
   unknown = [
     name
@@ -83,9 +79,39 @@ def load(
   ]
   if unknown:
     raise bedeck.errors.BedeckError(
-      f"{icons}: expected the sections {', '.join(sections)}, "
+      f"{path}: expected the sections {', '.join(sections)}, "
       f"not {', '.join(unknown)}"
     )
+  return data
+
+
+def load(
+  icons: pathlib.Path | None,
+  palette: bedeck.palette.Palette,
+) -> tuple[dict[str, str], Icons]:
+  """Read bedeck's icons and then an icons file (if given), whose entries add to
+  or replace bedeck's. Returns the colors the icons can have, as {name: hex},
+  and the icons, as {section: {name: Icon}} with the sections in SECTIONS' order
+  and their entries sorted by name. The colors are the ANSI ones, the palette's
+  file roles (e.g. file.media) and the icons' extra ones."""
+  data: dict[str, dict] = {}
+  source = {}  # the file each entry came from, for reporting errors in it
+  errors: dict[pathlib.Path, list[str]] = {}
+  for path in (ICONS, icons):
+    if path is None:
+      continue
+    for section, entries in read(path).items():
+      data.setdefault(section, {}).update(entries)
+      source |= {(section, name): path for name in entries}
+      if section == "extra-colors" and (
+        bad := bedeck.palette.bad_colors(section, entries)
+      ):
+        errors[path] = bad
+
+  def error(section: str, name: str, message: str) -> None:
+    file = source.get((section, name), ICONS)
+    errors.setdefault(file, []).append(f"{section}.{name}: {message}")
+
   extra = data.get("extra-colors", {})
   colors: dict[str, str] = {
     name: palette.colors[name] for name in bedeck.palette.ANSI
@@ -100,10 +126,10 @@ def load(
   }
   names = glyphs()
 
-  errors = bedeck.palette.bad_colors("extra-colors", extra)
-  missing = set(DEFAULTS.values()) | {"noext"}
-  missing -= set(data.get("default", {}))
-  errors += [f"default.{name}: missing" for name in sorted(missing)]
+  for name in sorted(
+    {*DEFAULTS.values(), "noext"} - data.get("default", {}).keys()
+  ):
+    error("default", name, "missing")
 
   result: Icons = {section: {} for section in SECTIONS}
   inherited = {}  # each default's color, for entries that don't give one
@@ -115,32 +141,35 @@ def load(
         case str() as icon if section != "default":
           color = inherited.get(DEFAULTS[section])
         case _:
-          errors.append(f"{section}.{name}: expected an icon or [icon, color]")
+          error(section, name, "expected an icon or [icon, color]")
           continue
       if section == "default":
         inherited[name] = color
       glyph = icon if len(icon) == 1 else names.get(icon)
       if glyph is None:
-        errors.append(f"{section}.{name}: unknown icon {icon}")
+        error(section, name, f"unknown icon {icon}")
       if color is None:
         continue  # its default is missing or malformed: an error already
       if color not in colors:
         kind = (
           "isn't an ANSI color" if color in palette.colors else "is unknown"
         )
-        errors.append(f"{section}.{name}: the color {color} {kind}")
+        error(section, name, f"the color {color} {kind}")
       elif glyph is not None:
         result[section][name] = Icon(glyph, color)
 
   if errors:
     raise bedeck.errors.BedeckError(
-      f"errors in {icons}:\n  " + "\n  ".join(errors)
+      "\n".join(
+        f"errors in {path}:\n  " + "\n  ".join(messages)
+        for path, messages in errors.items()
+      )
     )
   return colors, result
 
 
 def show(
-  icons: pathlib.Path,
+  icons: pathlib.Path | None,
   palette: pathlib.Path,
 ) -> None:
   """Print each section's icons in their colors, wrapped into columns that line

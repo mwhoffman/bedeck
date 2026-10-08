@@ -1,4 +1,6 @@
-# Icons, and their colors, for directories, file names and extensions.
+# bedeck's icons, and their colors, for directories, file names and extensions.
+# An icons file given with --icons is like this one, and its entries add to or
+# replace these.
 #
 # Each entry is NAME = [ICON, COLOR] or NAME = ICON, where ICON is a Nerd Font
 # glyph name (e.g. "oct-gear") or a single character (e.g. "\u2371"). COLOR is
@@ -362,6 +364,7 @@ dir = ["md-folder", "file.directory"]
 "id_rsa" = "md-key"
 "indent.pro" = ["md-dots_hexagon", "bright_yellow"]
 "index.theme" = "fa-paint_roller"
+"init.lua" = ["seti-lua", "azure"]
 "inputrc" = "md-file_cog"
 "ionic.config.json" = ["dev-ionic", "bright_green"]
 "ipf.rules" = "md-file_cog"
@@ -398,6 +401,7 @@ dir = ["md-folder", "file.directory"]
 "makefile" = "seti-makefile"
 "Makefile.ac" = "seti-makefile"
 "Makefile.am" = "seti-makefile"
+"makefile.am" = "seti-makefile"
 "Makefile.in" = "seti-makefile"
 "MANIFEST" = ["seti-python", "bright_yellow"]
 "MANIFEST.in" = ["seti-python", "bright_yellow"]
