@@ -36,6 +36,14 @@ Yes = Annotated[
   bool,
   typer.Option("--yes", "-y", help="Overwrite existing files without asking."),
 ]
+Compare = Annotated[
+  bool,
+  typer.Option(
+    "--compare",
+    "-c",
+    help="Print only the icons the icons file changes, as old → new.",
+  ),
+]
 
 app = typer.Typer(no_args_is_help=True, add_completion=True)
 
@@ -49,10 +57,13 @@ def main() -> None:
 def icons(
   theme: Theme,
   icons: Icons = None,
+  compare: Compare = False,
 ) -> None:
   """Print the icons in their colors from the theme."""
+  if compare and icons is None:
+    raise typer.BadParameter("needs --icons", param_hint="--compare")
   try:
-    bedeck.icons.show(icons, theme)
+    bedeck.icons.show(icons, theme, compare)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

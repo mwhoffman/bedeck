@@ -33,6 +33,9 @@ SECTIONS = {
 }
 # The default whose color each section's entries get if they don't give one.
 DEFAULTS = {"dir": "dir", "file": "file", "ext": "file", "filetype": "file"}
+# Shown in place of the old icon of one that's new, when comparing: a dotted
+# square (md-border_none_variant).
+ADDED = "\U000f08a4"
 # How the names in a section are shown, if not as they are.
 LABELS = {"dir": "{}/", "ext": "*.{}"}
 
@@ -168,24 +171,43 @@ def load(
 def show(
   icons: pathlib.Path | None,
   theme: pathlib.Path,
+  compare: bool = False,
 ) -> None:
   """Print each section's icons in their colors, wrapped into columns that line
-  up across the sections."""
-  # The glyph is followed by spaces since kitty only draws an icon wider than a
-  # cell if it is.
-  colors, data = load(icons, bedeck.theme.load(theme))
-  sections = {
-    section: [
-      rich.text.Text.assemble(
-        (glyph, colors[color]), "  ", LABELS.get(section, "{}").format(name)
-      )
-      for name, (glyph, color) in entries.items()
-    ]
-    for section, entries in data.items()
-    if entries
-  }
-  width = max(cell.cell_len for cells in sections.values() for cell in cells)
+  up across the sections. If comparing, print only the icons that the icons file
+  changes (in their glyph or color), each as its old icon and then its new one;
+  one that the file adds has a dotted square as its old icon."""
+  loaded = bedeck.theme.load(theme)
+  colors, data = load(icons, loaded)
+  old_colors, old = load(None, loaded) if compare else ({}, {})
+
+  def cell(section: str, name: str, icon: Icon) -> rich.text.Text | None:
+    # A glyph is followed by spaces since kitty only draws an icon wider than a
+    # cell if it is.
+    new = (icon.glyph, colors[icon.color])
+    parts = [new, "  ", LABELS.get(section, "{}").format(name)]
+    if compare:
+      was = old[section].get(name)
+      before = (was.glyph, old_colors[was.color]) if was else (ADDED, "dim")
+      if before == new:
+        return None
+      parts = [before, " → ", *parts]
+    return rich.text.Text.assemble(*parts)
+
+  sections = {}
+  for section, entries in data.items():
+    cells = [cell(section, name, icon) for name, icon in entries.items()]
+    if cells := [cell for cell in cells if cell is not None]:
+      sections[section] = cells
   console = rich.console.Console(highlight=False)
+  if not sections:
+    console.print("No icons changed." if compare else "No icons.")
+    return
+  width = max(cell.cell_len for cells in sections.values() for cell in cells)
   for section, cells in sections.items():
     console.print(f"\n{SECTIONS[section]} ({len(cells)})", style="bold")
-    console.print(rich.columns.Columns(cells, width=width, column_first=True))
+    console.print(
+      rich.columns.Columns(
+        cells, padding=(0, 4), width=width, column_first=True
+      )
+    )
