@@ -74,7 +74,7 @@ def by_name(entries: dict) -> dict:
 def read(path: pathlib.Path) -> dict[str, dict]:
   """Read an icons file, checking it only has the sections it can."""
   data = bedeck.theme.read_toml(path)
-  sections = (*SECTIONS, "extra-colors")
+  sections = (*SECTIONS, "extra_colors")
   unknown = [
     name
     for name, value in data.items()
@@ -96,7 +96,8 @@ def load(
   or replace bedeck's. Returns the colors the icons can have, as {name: hex},
   and the icons, as {section: {name: Icon}} with the sections in SECTIONS' order
   and their entries sorted by name. The colors are the ANSI ones, the theme's
-  file roles (e.g. file.media) and the icons' extra ones."""
+  file roles (e.g. file.media) and the icons' extra ones (e.g.
+  extra_colors.azure)."""
   data: dict[str, dict] = {}
   source = {}  # the file each entry came from, for reporting errors in it
   errors: dict[pathlib.Path, list[str]] = {}
@@ -106,7 +107,7 @@ def load(
     for section, entries in read(path).items():
       data.setdefault(section, {}).update(entries)
       source |= {(section, name): path for name in entries}
-      if section == "extra-colors" and (
+      if section == "extra_colors" and (
         bad := bedeck.theme.bad_colors(section, entries)
       ):
         errors[path] = bad
@@ -115,17 +116,14 @@ def load(
     file = source.get((section, name), ICONS)
     errors.setdefault(file, []).append(f"{section}.{name}: {message}")
 
-  extra = data.get("extra-colors", {})
+  extra = data.get("extra_colors", {})
   colors: dict[str, str] = {
     name: theme.colors[name] for name in bedeck.theme.ANSI
   }
   colors |= {
     f"file.{name}": color for name, color in theme.roles.get("file", {}).items()
   }
-  # The theme's color is used for an extra one if it has one of that name.
-  colors |= {
-    name: theme.colors.get(name, color) for name, color in extra.items()
-  }
+  colors |= {f"extra_colors.{name}": color for name, color in extra.items()}
   names = glyphs()
 
   for name in sorted(
@@ -153,7 +151,12 @@ def load(
       if color is None:
         continue  # its default is missing or malformed: an error already
       if color not in colors:
-        kind = "isn't an ANSI color" if color in theme.colors else "is unknown"
+        if color in extra:
+          kind = f"is an extra one: use extra_colors.{color}"
+        elif color in theme.colors:
+          kind = "isn't an ANSI color"
+        else:
+          kind = "is unknown"
         error(section, name, f"the color {color} {kind}")
       elif glyph is not None:
         result[section][name] = Icon(glyph, color)
