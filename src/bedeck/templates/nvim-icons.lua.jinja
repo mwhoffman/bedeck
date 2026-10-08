@@ -3,7 +3,7 @@ A Lua module for nvim, bedeck.icons, whose setup() sets up mini.icons with the
 icons and defines the highlight groups they use. It also has the default icons,
 since mini.icons has none for files with no extension.
 #}
-{% macro highlight(color) %}Icons{{ color.title().replace('_', '') }}{% endmacro %}
+{% macro highlight(color) %}Icons{{ color.title().replace('_', '').replace('.', '') }}{% endmacro %}
 {% macro lua(icon) -%}
 {glyph = '\u{{ '{%x}' % (icon.glyph | ord) }}', hl = '{{ highlight(icon.color) }}'}
 {%- endmacro %}

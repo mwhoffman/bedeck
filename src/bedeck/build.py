@@ -104,11 +104,12 @@ def build(
   """Render each template (e.g. eza.yml.jinja) to the output directory (as
   eza.yml), asking before overwriting a file unless `yes`. They all get the
   same context, and use what they need of it."""
-  colors, roles = bedeck.palette.load(palette)
-  icon_colors, data = bedeck.icons.load(icons, colors)
+  theme = bedeck.palette.load(palette)
+  colors, roles = theme
+  icon_colors, data = bedeck.icons.load(icons, theme)
   context = {
     "colors": colors,
-    # The palette's colors and the icons file's extra ones: for icons only.
+    # The colors icons can have: ANSI ones, file roles and the icons' extras.
     "icon_colors": icon_colors,
     "icons": data,
     "eza_filenames": eza_filenames(data),

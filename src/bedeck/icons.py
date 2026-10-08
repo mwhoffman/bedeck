@@ -3,7 +3,6 @@
 import json
 import pathlib
 import urllib.request
-from collections.abc import Mapping
 from typing import NamedTuple
 
 import rich.columns
@@ -68,12 +67,13 @@ def by_name(entries: dict) -> dict:
 
 def load(
   icons: pathlib.Path,
-  palette: Mapping[str, str],
+  palette: bedeck.palette.Palette,
 ) -> tuple[dict[str, str], Icons]:
-  """Read an icons file, given its palette's colors: returns the icons'
-  colors, as {name: hex}, which are the palette's and then the icons file's
-  extra ones, and the icons, as {section: {name: Icon}} with the
-  sections in SECTIONS' order and their entries sorted by name."""
+  """Read an icons file, given its palette: returns the colors the icons can
+  have, as {name: hex}, and the icons, as {section: {name: Icon}} with the
+  sections in SECTIONS' order and their entries sorted by name. The colors are
+  the ANSI ones, the palette's file roles (e.g. file.media) and the icons file's
+  extra ones."""
   data = bedeck.palette.read_toml(icons)
   sections = (*SECTIONS, "extra-colors")
   unknown = [
@@ -87,7 +87,17 @@ def load(
       f"not {', '.join(unknown)}"
     )
   extra = data.get("extra-colors", {})
-  colors = {**palette, **extra, **palette}  # the palette's come first, and win
+  colors: dict[str, str] = {
+    name: palette.colors[name] for name in bedeck.palette.ANSI
+  }
+  colors |= {
+    f"file.{name}": color
+    for name, color in palette.roles.get("file", {}).items()
+  }
+  # The palette's color is used for an extra one if it has one of that name.
+  colors |= {
+    name: palette.colors.get(name, color) for name, color in extra.items()
+  }
   names = glyphs()
 
   errors = bedeck.palette.bad_colors("extra-colors", extra)
@@ -115,7 +125,10 @@ def load(
       if color is None:
         continue  # its default is missing or malformed: an error already
       if color not in colors:
-        errors.append(f"{section}.{name}: unknown color {color}")
+        kind = (
+          "isn't an ANSI color" if color in palette.colors else "is unknown"
+        )
+        errors.append(f"{section}.{name}: the color {color} {kind}")
       elif glyph is not None:
         result[section][name] = Icon(glyph, color)
 
@@ -134,7 +147,7 @@ def show(
   up across the sections."""
   # The glyph is followed by spaces since kitty only draws an icon wider than a
   # cell if it is.
-  colors, data = load(icons, bedeck.palette.load(palette).colors)
+  colors, data = load(icons, bedeck.palette.load(palette))
   sections = {
     section: [
       rich.text.Text.assemble(

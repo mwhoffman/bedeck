@@ -71,6 +71,8 @@ indicator = "magenta"
 
 # Kinds of file.
 [roles.file]
+plain = "bright_white"
+script = "bright_white"
 directory = "blue"
 symlink = "bright_cyan"
 executable = "bright_green"
