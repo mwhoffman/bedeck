@@ -38,6 +38,63 @@ def lua_string(text: str) -> str:
   return "'" + text.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
+# How each tool names the 16 ANSI colors, in order.
+EZA = [
+  "Black",
+  "Red",
+  "Green",
+  "Yellow",
+  "Blue",
+  "Magenta",
+  "Cyan",
+  "White",
+  "DarkGray",
+  "LightRed",
+  "LightGreen",
+  "LightYellow",
+  "LightBlue",
+  "LightMagenta",
+  "LightCyan",
+  "LightGray",
+]
+NAMES = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]
+
+
+def sgr(color: bedeck.palette.Color, ground: str = "fg") -> str:
+  """A color as a terminal (SGR) code, as dircolors uses: e.g. 34 for blue, 104
+  for a bright blue background, or a 24-bit code if it isn't an ANSI color."""
+  offset = 10 if ground == "bg" else 0
+  if color.ansi is None:
+    rgb = ";".join(str(int(color[i : i + 2], 16)) for i in (1, 3, 5))
+    return f"{38 + offset};2;{rgb}"
+  return str((30 if color.ansi < 8 else 82) + offset + color.ansi)
+
+
+def eza(color: bedeck.palette.Color) -> str:
+  """A color as eza's theme names it, e.g. LightRed, or else as quoted hex."""
+  return f'"{color}"' if color.ansi is None else EZA[color.ansi]
+
+
+def tmux(color: bedeck.palette.Color) -> str:
+  """A color as tmux names it, e.g. color4, or else as hex."""
+  return str(color) if color.ansi is None else f"color{color.ansi}"
+
+
+def zsh(color: bedeck.palette.Color) -> str:
+  """A color as zsh's %F{...} takes it: a name (e.g. blue) for the first 8, a
+  number (e.g. 11) for the bright ones, or else hex."""
+  if color.ansi is None:
+    return str(color)
+  return NAMES[color.ansi] if color.ansi < 8 else str(color.ansi)
+
+
+def git(color: bedeck.palette.Color) -> str:
+  """A color as git's config names it, e.g. brightgreen, or else as quoted hex."""
+  if color.ansi is None:
+    return f'"{color}"'
+  return ("" if color.ansi < 8 else "bright") + NAMES[color.ansi % 8]
+
+
 def build(
   icons: pathlib.Path,
   palette: pathlib.Path,
@@ -70,6 +127,7 @@ def build(
     undefined=jinja2.StrictUndefined,
   )
   env.filters |= {"ord": ord, "lua_string": lua_string}
+  env.filters |= {"sgr": sgr, "eza": eza, "tmux": tmux, "zsh": zsh, "git": git}
   # Render them all first, so a problem with one leaves nothing half built.
   files = {
     output / name.removesuffix(".jinja"): env.get_template(name).render(context)

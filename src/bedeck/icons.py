@@ -3,6 +3,7 @@
 import json
 import pathlib
 import urllib.request
+from collections.abc import Mapping
 from typing import NamedTuple
 
 import rich.columns
@@ -67,7 +68,7 @@ def by_name(entries: dict) -> dict:
 
 def load(
   icons: pathlib.Path,
-  palette: dict[str, str],
+  palette: Mapping[str, str],
 ) -> tuple[dict[str, str], Icons]:
   """Read an icons file, given its palette's colors: returns the icons'
   colors, as {name: hex}, which are the palette's and then the icons file's

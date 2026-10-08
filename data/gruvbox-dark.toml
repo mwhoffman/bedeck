@@ -46,7 +46,7 @@ fg4 = "#928374"
 
 # The general interface.
 [roles.ui]
-background = "bg0"
+background = "black"
 text = "fg0"
 text_dim = "fg3"
 text_faint = "fg4"
@@ -63,10 +63,10 @@ selection_text = "fg4"
 [roles.chrome]
 active = "blue"
 active_bright = "bright_blue"
-inactive = "bg4"
-inactive_bright = "fg3"
+inactive = "bright_black"
+inactive_bright = "white"
 unfocused = "bg_hard"
-text = "bg0"
+text = "black"
 indicator = "magenta"
 
 # Kinds of file.
@@ -90,3 +90,9 @@ untracked = "red"
 ahead = "green"
 behind = "magenta"
 branch = "bright_cyan"
+
+# Messages printed in the terminal, e.g. while completing.
+[roles.messages]
+descriptions = "green"
+messages = "magenta"
+warnings = "red"
