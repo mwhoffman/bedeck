@@ -1,4 +1,4 @@
-# gruvbox's (dark) palette.
+# The gruvbox (dark) theme: its colors, and the roles they're used for.
 
 [colors]
 # The 16 ANSI colors in order. gruvbox uses its background, text and greys for
@@ -20,7 +20,7 @@ bright_magenta = "#d3869b"
 bright_cyan = "#8ec07c"
 bright_white = "fg0"
 
-# Accents: colors the palette has beyond the ANSI ones. gruvbox's is orange.
+# Accents: colors the theme has beyond the ANSI ones. gruvbox's is orange.
 accent1 = "#d65d0e"
 bright_accent1 = "#fe8019"
 

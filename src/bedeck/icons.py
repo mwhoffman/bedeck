@@ -10,7 +10,7 @@ import rich.console
 import rich.text
 
 import bedeck.errors
-import bedeck.palette
+import bedeck.theme
 
 
 # bedeck's own icons, which an icons file given to it adds to or replaces.
@@ -70,7 +70,7 @@ def by_name(entries: dict) -> dict:
 
 def read(path: pathlib.Path) -> dict[str, dict]:
   """Read an icons file, checking it only has the sections it can."""
-  data = bedeck.palette.read_toml(path)
+  data = bedeck.theme.read_toml(path)
   sections = (*SECTIONS, "extra-colors")
   unknown = [
     name
@@ -87,12 +87,12 @@ def read(path: pathlib.Path) -> dict[str, dict]:
 
 def load(
   icons: pathlib.Path | None,
-  palette: bedeck.palette.Palette,
+  theme: bedeck.theme.Theme,
 ) -> tuple[dict[str, str], Icons]:
   """Read bedeck's icons and then an icons file (if given), whose entries add to
   or replace bedeck's. Returns the colors the icons can have, as {name: hex},
   and the icons, as {section: {name: Icon}} with the sections in SECTIONS' order
-  and their entries sorted by name. The colors are the ANSI ones, the palette's
+  and their entries sorted by name. The colors are the ANSI ones, the theme's
   file roles (e.g. file.media) and the icons' extra ones."""
   data: dict[str, dict] = {}
   source = {}  # the file each entry came from, for reporting errors in it
@@ -104,7 +104,7 @@ def load(
       data.setdefault(section, {}).update(entries)
       source |= {(section, name): path for name in entries}
       if section == "extra-colors" and (
-        bad := bedeck.palette.bad_colors(section, entries)
+        bad := bedeck.theme.bad_colors(section, entries)
       ):
         errors[path] = bad
 
@@ -114,15 +114,14 @@ def load(
 
   extra = data.get("extra-colors", {})
   colors: dict[str, str] = {
-    name: palette.colors[name] for name in bedeck.palette.ANSI
+    name: theme.colors[name] for name in bedeck.theme.ANSI
   }
   colors |= {
-    f"file.{name}": color
-    for name, color in palette.roles.get("file", {}).items()
+    f"file.{name}": color for name, color in theme.roles.get("file", {}).items()
   }
-  # The palette's color is used for an extra one if it has one of that name.
+  # The theme's color is used for an extra one if it has one of that name.
   colors |= {
-    name: palette.colors.get(name, color) for name, color in extra.items()
+    name: theme.colors.get(name, color) for name, color in extra.items()
   }
   names = glyphs()
 
@@ -151,9 +150,7 @@ def load(
       if color is None:
         continue  # its default is missing or malformed: an error already
       if color not in colors:
-        kind = (
-          "isn't an ANSI color" if color in palette.colors else "is unknown"
-        )
+        kind = "isn't an ANSI color" if color in theme.colors else "is unknown"
         error(section, name, f"the color {color} {kind}")
       elif glyph is not None:
         result[section][name] = Icon(glyph, color)
@@ -170,13 +167,13 @@ def load(
 
 def show(
   icons: pathlib.Path | None,
-  palette: pathlib.Path,
+  theme: pathlib.Path,
 ) -> None:
   """Print each section's icons in their colors, wrapped into columns that line
   up across the sections."""
   # The glyph is followed by spaces since kitty only draws an icon wider than a
   # cell if it is.
-  colors, data = load(icons, bedeck.palette.load(palette))
+  colors, data = load(icons, bedeck.theme.load(theme))
   sections = {
     section: [
       rich.text.Text.assemble(

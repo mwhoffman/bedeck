@@ -20,10 +20,10 @@ Icons = Annotated[
     help="A file of icons, to add to or replace bedeck's own.",
   ),
 ]
-Palette = Annotated[
+Theme = Annotated[
   pathlib.Path,
   typer.Option(
-    "--palette", "-p", exists=True, dir_okay=False, help="The palette file."
+    "--theme", "-t", exists=True, dir_okay=False, help="The theme file."
   ),
 ]
 Output = Annotated[
@@ -47,12 +47,12 @@ def main() -> None:
 
 @app.command()
 def icons(
-  palette: Palette,
+  theme: Theme,
   icons: Icons = None,
 ) -> None:
-  """Print the icons in their colors from the palette."""
+  """Print the icons in their colors from the theme."""
   try:
-    bedeck.icons.show(icons, palette)
+    bedeck.icons.show(icons, theme)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error
@@ -60,14 +60,14 @@ def icons(
 
 @app.command()
 def build(
-  palette: Palette,
+  theme: Theme,
   output: Output,
   icons: Icons = None,
   yes: Yes = False,
 ) -> None:
   """Build the theme files, e.g. eza's theme and mini.icons' config."""
   try:
-    bedeck.build.build(icons, palette, output, yes)
+    bedeck.build.build(icons, theme, output, yes)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

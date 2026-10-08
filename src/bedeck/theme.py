@@ -1,5 +1,5 @@
-"""The palette: the named colors that everything is themed with, and the roles
-which say what they're used for."""
+"""A theme: the named colors that everything is themed with, and the roles which
+say what they're used for."""
 
 import pathlib
 import re
@@ -45,7 +45,7 @@ class Color(str):
     return color
 
 
-class Palette(NamedTuple):
+class Theme(NamedTuple):
   colors: dict[str, Color]
   roles: dict[str, dict[str, Color]]  # {group: {role: color}}
 
@@ -71,8 +71,8 @@ def bad_colors(
   ]
 
 
-def load(path: pathlib.Path) -> Palette:
-  """Read a palette file: returns its colors and its roles. A color can be given
+def load(path: pathlib.Path) -> Theme:
+  """Read a theme file: returns its colors and its roles. A color can be given
   as another color's name (e.g. black = "bg0") rather than as hex, and a role
   (e.g. roles.ui.text) is given as a color's name."""
   data = read_toml(path)
@@ -107,4 +107,4 @@ def load(path: pathlib.Path) -> Palette:
       f"errors in {path}:\n  " + "\n  ".join(errors)
     )
   colors = {name: Color(value, name) for name, value in resolved.items()}
-  return Palette(colors, roles)
+  return Theme(colors, roles)

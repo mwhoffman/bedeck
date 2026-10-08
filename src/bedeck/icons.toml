@@ -4,7 +4,7 @@
 #
 # Each entry is NAME = [ICON, COLOR] or NAME = ICON, where ICON is a Nerd Font
 # glyph name (e.g. "oct-gear") or a single character (e.g. "\u2371"). COLOR is
-# one of the palette's file roles (e.g. "file.media"), one of the 16 ANSI colors
+# one of the theme's file roles (e.g. "file.media"), one of the 16 ANSI colors
 # (e.g. "bright_red") or one of [extra-colors]. An entry with no color gets its
 # section's default one: default.dir's for [dir], and default.file's for the
 # others.
@@ -16,7 +16,7 @@
 # defaults match.
 
 # Colors the icons use beyond the ANSI ones, for languages and brands. The
-# palette's color is used if it has one of the same name.
+# theme's color is used if it has one of the same name.
 [extra-colors]
 orange = "#fe8019"
 vim_green = "#019833"

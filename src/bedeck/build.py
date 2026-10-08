@@ -7,7 +7,7 @@ import rich.prompt
 
 import bedeck.errors
 import bedeck.icons
-import bedeck.palette
+import bedeck.theme
 
 
 def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
@@ -60,7 +60,7 @@ EZA = [
 NAMES = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]
 
 
-def sgr(color: bedeck.palette.Color, ground: str = "fg") -> str:
+def sgr(color: bedeck.theme.Color, ground: str = "fg") -> str:
   """A color as a terminal (SGR) code, as dircolors uses: e.g. 34 for blue, 104
   for a bright blue background, or a 24-bit code if it isn't an ANSI color."""
   offset = 10 if ground == "bg" else 0
@@ -70,17 +70,17 @@ def sgr(color: bedeck.palette.Color, ground: str = "fg") -> str:
   return str((30 if color.ansi < 8 else 82) + offset + color.ansi)
 
 
-def eza(color: bedeck.palette.Color) -> str:
+def eza(color: bedeck.theme.Color) -> str:
   """A color as eza's theme names it, e.g. LightRed, or else as quoted hex."""
   return f'"{color}"' if color.ansi is None else EZA[color.ansi]
 
 
-def tmux(color: bedeck.palette.Color) -> str:
+def tmux(color: bedeck.theme.Color) -> str:
   """A color as tmux names it, e.g. color4, or else as hex."""
   return str(color) if color.ansi is None else f"color{color.ansi}"
 
 
-def zsh(color: bedeck.palette.Color) -> str:
+def zsh(color: bedeck.theme.Color) -> str:
   """A color as zsh's %F{...} takes it: a name (e.g. blue) for the first 8, a
   number (e.g. 11) for the bright ones, or else hex."""
   if color.ansi is None:
@@ -88,7 +88,7 @@ def zsh(color: bedeck.palette.Color) -> str:
   return NAMES[color.ansi] if color.ansi < 8 else str(color.ansi)
 
 
-def git(color: bedeck.palette.Color) -> str:
+def git(color: bedeck.theme.Color) -> str:
   """A color as git's config names it, e.g. brightgreen, or else as quoted hex."""
   if color.ansi is None:
     return f'"{color}"'
@@ -97,16 +97,16 @@ def git(color: bedeck.palette.Color) -> str:
 
 def build(
   icons: pathlib.Path | None,
-  palette: pathlib.Path,
+  theme: pathlib.Path,
   output: pathlib.Path,
   yes: bool,
 ) -> None:
   """Render each template (e.g. eza.yml.jinja) to the output directory (as
   eza.yml), asking before overwriting a file unless `yes`. They all get the
   same context, and use what they need of it."""
-  theme = bedeck.palette.load(palette)
-  colors, roles = theme
-  icon_colors, data = bedeck.icons.load(icons, theme)
+  loaded = bedeck.theme.load(theme)
+  colors, roles = loaded
+  icon_colors, data = bedeck.icons.load(icons, loaded)
   context = {
     "colors": colors,
     # The colors icons can have: ANSI ones, file roles and the icons' extras.
@@ -116,7 +116,7 @@ def build(
   }
   if reserved := roles.keys() & context.keys():
     raise bedeck.errors.BedeckError(
-      f"{palette}: roles can't be called {', '.join(sorted(reserved))}"
+      f"{theme}: roles can't be called {', '.join(sorted(reserved))}"
     )
   # Each group of roles is a name of its own, e.g. ui.text.
   context |= roles
