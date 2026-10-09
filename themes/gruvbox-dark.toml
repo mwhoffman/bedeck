@@ -46,7 +46,7 @@ fg4 = "#928374"
 
 # The general interface.
 [roles.ui]
-background = "black"
+background = "bg0"
 text = "fg0"
 text_dim = "fg3"
 text_faint = "fg4"
@@ -92,6 +92,13 @@ untracked = "red"
 ahead = "green"
 behind = "magenta"
 branch = "bright_cyan"
+
+# The backgrounds of the lines of a diff: each is a color mixed into the
+# background, so that text stays readable on it.
+[roles.diff]
+added = {mix = "green", into = "bg0", amount = 0.4}
+changed = {mix = "cyan", into = "bg0", amount = 0.4}
+deleted = {mix = "red", into = "bg0", amount = 0.4}
 
 # Messages printed in the terminal, e.g. while completing.
 [roles.messages]

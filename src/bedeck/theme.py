@@ -71,10 +71,23 @@ def bad_colors(
   ]
 
 
+def mix(color: str, into: str, amount: float) -> str:
+  """A color (as hex) mixed into another: the amount (0 to 1) is how much of the
+  result is the first color."""
+  parts = [
+    round(b + amount * (a - b))
+    for a, b in (
+      (int(color[i : i + 2], 16), int(into[i : i + 2], 16)) for i in (1, 3, 5)
+    )
+  ]
+  return "#" + "".join(f"{part:02x}" for part in parts)
+
+
 def load(path: pathlib.Path) -> Theme:
   """Read a theme file: returns its colors and its roles. A color can be given
-  as another color's name (e.g. black = "bg0") rather than as hex, and a role
-  (e.g. roles.ui.text) is given as a color's name."""
+  as another color's name (e.g. black = "bg0") rather than as hex. A role (e.g.
+  roles.ui.text) is given as a color's name, or as a mix of one color into
+  another (e.g. {mix = "green", into = "bg0", amount = 0.4})."""
   data = read_toml(path)
   colors = data.get("colors")
   if not isinstance(colors, dict):
@@ -96,11 +109,26 @@ def load(path: pathlib.Path) -> Theme:
       errors.append(f"roles.{group}: expected a section of roles")
       continue
     roles[group] = {}
-    for name, color in entries.items():
-      if isinstance(color, str) and color in resolved:
-        roles[group][name] = Color(resolved[color], color)
-      else:
-        errors.append(f"roles.{group}.{name}: expected the name of a color")
+    for name, value in entries.items():
+      match value:
+        case str() if value in resolved:
+          roles[group][name] = Color(resolved[value], value)
+        case {
+          "mix": str() as color,
+          "into": str() as into,
+          "amount": int() | float() as amount,
+        } if color in resolved and into in resolved and 0 <= amount <= 1:
+          # The colors' own errors, if any, are reported instead of mixing them.
+          if errors:
+            mixed = resolved[into]
+          else:
+            mixed = mix(resolved[color], resolved[into], amount)
+          roles[group][name] = Color(mixed, f"{color} into {into}")
+        case _:
+          errors.append(
+            f"roles.{group}.{name}: expected the name of a color, or a mix "
+            'like {mix = "green", into = "bg0", amount = 0.4}'
+          )
 
   if errors:
     raise bedeck.errors.BedeckError(
