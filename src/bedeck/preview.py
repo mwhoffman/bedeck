@@ -12,7 +12,7 @@ import bedeck.theme
 
 
 # The preview: a template of rich's markup.
-PREVIEW = pathlib.Path(__file__).parent / "preview.jinja"
+PREVIEW = pathlib.Path(__file__).parent / "data/preview.jinja"
 
 
 def show(theme: pathlib.Path) -> None:

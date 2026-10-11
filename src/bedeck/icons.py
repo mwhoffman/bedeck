@@ -14,7 +14,7 @@ import bedeck.theme
 
 
 # bedeck's own icons, which an icons file given to it adds to or replaces.
-ICONS = pathlib.Path(__file__).parent / "icons.toml"
+ICONS = pathlib.Path(__file__).parent / "data/icons.toml"
 
 CACHE = pathlib.Path.home() / ".cache/bedeck"
 NERD_FONTS = "v3.5.1"  # the version of the installed fonts

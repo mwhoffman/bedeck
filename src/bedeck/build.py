@@ -11,8 +11,8 @@ import bedeck.theme
 
 
 # bedeck's templates, and its styles: each is a directory of templates.
-TEMPLATES = pathlib.Path(__file__).parent / "templates"
-STYLES = pathlib.Path(__file__).parent / "styles"
+TEMPLATES = pathlib.Path(__file__).parent / "data/templates"
+STYLES = pathlib.Path(__file__).parent / "data/styles"
 
 
 def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
