@@ -8,6 +8,7 @@ import typer
 import bedeck.build
 import bedeck.errors
 import bedeck.icons
+import bedeck.preview
 
 
 Icons = Annotated[
@@ -64,6 +65,16 @@ def icons(
     raise typer.BadParameter("needs --icons", param_hint="--compare")
   try:
     bedeck.icons.show(icons, theme, compare)
+  except bedeck.errors.BedeckError as error:
+    typer.echo(f"bedeck: {error}", err=True)
+    raise typer.Exit(1) from error
+
+
+@app.command()
+def preview(theme: Theme) -> None:
+  """Print a preview of the theme: mock-ups of a prompt, files, git and more."""
+  try:
+    bedeck.preview.show(theme)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

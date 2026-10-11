@@ -46,7 +46,7 @@ fg4 = "#928374"
 
 # The general interface.
 [roles.ui]
-background = "bg0"
+background = "black"
 text = "fg0"
 text_dim = "fg3"
 text_faint = "fg4"

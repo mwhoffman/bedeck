@@ -1,0 +1,60 @@
+{#
+A preview of a theme, printed by `bedeck preview`: mock-ups of a prompt, a file
+listing, git and tabs, in the theme's colors. This is rich's markup:
+[STYLE]text[/] styles the text, where a style is e.g. a color, "on" a
+background color, and bold. A literal [ is written \[.
+#}
+{% macro swatch(name, color, width=15) %}[{{ color }}]████[/] {{ name.ljust(width) }}[{{ ui.text_dim }}]{{ color }}[/]{% endmacro %}
+[bold]ANSI colors[/]
+{% for name in ansi[:8] %}
+  {{ swatch(name, colors[name]) }}    {{ swatch('bright_' ~ name, colors['bright_' ~ name]) }}
+{% endfor %}
+
+[bold]Accents[/]
+{% for name in colors if name not in ansi and name[:2] not in ('bg', 'fg') and not name.startswith('bright_') %}
+  {{ swatch(name, colors[name]) }}    {{ swatch('bright_' ~ name, colors['bright_' ~ name]) }}
+{% endfor %}
+
+[bold]Background and foreground[/]
+{% for suffix in ['_hard', '0', '1', '2', '3', '4'] %}
+  {{ swatch('bg' ~ suffix, colors['bg' ~ suffix]) }}    {{ swatch('fg' ~ suffix, colors['fg' ~ suffix]) }}
+{% endfor %}
+
+[bold]Prompt[/]
+  [bold {{ ui.bright_highlight }}]host[/]  [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/] 
+  [{{ git.modified }}]changed[/] [{{ git.behind }}]behind[/] [{{ git.ahead }}]ahead[/]
+
+[bold]Files[/]
+  [{{ ui.text_faint }}]drwxr-xr-x[/]  [{{ colors.green }}]   -[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]--[/] [bold {{ file.directory }}]src[/]
+  [{{ ui.text_faint }}]lrwxrwxrwx[/]  [{{ colors.green }}]   -[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
+  [{{ ui.text_faint }}]-rwxr-xr-x[/]  [{{ colors.green }}]1.2k[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}] 840[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]--[/] [{{ file.script }}]setup.sh[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]2.1k[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.text_faint }}]-[/] [{{ file.plain }}]README.md[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}] 14M[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]3.4M[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.media }}]photo.png[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]220k[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.document }}]report.pdf[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}] 48k[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.compiled }}]main.o[/]
+  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]2.0k[/] [{{ ui.text_faint }}] 6 Oct 09:03[/] [{{ ui.text_faint }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
+  [{{ ui.text_faint }}]prw-r--r--[/]  [{{ colors.green }}]   -[/] [{{ ui.text_faint }}] 6 Oct 09:03[/] [{{ ui.text_faint }}]--[/] [underline {{ file.special }}]pipe[/]
+
+[bold]Git status[/]
+  [{{ git.added }}]A [/] src/added.py
+  [{{ git.added }}]M [/] src/staged.py
+   [{{ git.modified }}]M[/] src/changed.py
+  [{{ git.untracked }}]??[/] scratch.txt
+
+[bold]Diff[/]
+  [on {{ diff.deleted }}]{{ '- a line that was deleted'.ljust(44) }}[/]
+  [on {{ diff.added }}]{{ '+ a line that was added'.ljust(44) }}[/]
+  [on {{ diff.changed }}]{{ '~ a line that was changed'.ljust(44) }}[/]
+
+[bold]Terminal tabs[/]
+  [{{ chrome.text }} on {{ chrome.active }}] 1 [/][{{ chrome.text }} on {{ chrome.active_bright }}] zsh [/] [{{ chrome.text }} on {{ chrome.inactive }}] 2 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] nvim [/] [{{ ui.alert }} on {{ chrome.inactive }}] 󰂚 [/][{{ chrome.text }} on {{ chrome.inactive }}]3 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] logs [/]
+
+[bold]Multiplexer tabs[/]
+  [{{ chrome.text }} on {{ chrome.active }}] 󰞷 [/] [bold {{ chrome.text }} on {{ ui.highlight }}] 1 [/][{{ chrome.text }} on {{ ui.bright_highlight }}] editor [/] [{{ chrome.text }} on {{ chrome.inactive }}] 2 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] shell [/]
+
+[bold]Text[/]
+  Normal text, [{{ ui.text_dim }}]dimmed text[/] and [{{ ui.text_faint }}]faint text[/]. A link: [underline {{ ui.url }}]https://example.com[/]
+  [{{ ui.selection_text }} on {{ ui.selection }}] selected text [/] and the cursor [on {{ ui.cursor }}] [/]
+  [{{ messages.descriptions }}]-- a description --[/]  [{{ messages.messages }}]-- a message --[/]  [{{ messages.warnings }}]-- no matches found --[/]
