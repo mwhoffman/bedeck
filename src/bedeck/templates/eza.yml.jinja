@@ -39,10 +39,28 @@ git:
   typechange: {foreground: {{ git.modified | eza }}}
   deleted: {foreground: {{ git.deleted | eza }}}
 
-punctuation: {foreground: {{ ui.text_faint | eza }}}
-date: {foreground: {{ ui.text_faint | eza }}}
+users:
+  user_you: {foreground: {{ ui.highlight | eza }}, is_bold: true}
+  group_yours: {foreground: {{ ui.highlight | eza }}, is_bold: true}
+  user_root: {foreground: {{ ui.alert | eza }}}
+  group_root: {foreground: {{ ui.alert | eza }}}
+
+punctuation: {foreground: {{ ui.text_dim | eza }}}
+date: {foreground: {{ ui.text_dim | eza }}}
 perms:
-  attribute: {foreground: {{ ui.text_faint | eza }}}
+  user_read: {foreground: {{ permissions.read | eza }}}
+  user_write: {foreground: {{ permissions.write | eza }}}
+  user_execute_file: {foreground: {{ permissions.execute | eza }}}
+  user_execute_other: {foreground: {{ permissions.execute | eza }}}
+  group_read: {foreground: {{ permissions.read | eza }}}
+  group_write: {foreground: {{ permissions.write | eza }}}
+  group_execute: {foreground: {{ permissions.execute | eza }}}
+  other_read: {foreground: {{ permissions.read | eza }}}
+  other_write: {foreground: {{ permissions.write | eza }}}
+  other_execute: {foreground: {{ permissions.execute | eza }}}
+  special_user_file: {foreground: {{ permissions.special | eza }}}
+  special_other: {foreground: {{ permissions.special | eza }}}
+  attribute: {foreground: {{ ui.text_dim | eza }}}
 
 {% macro escape(glyph) -%}
 {% set code = glyph | ord -%}

@@ -5,6 +5,9 @@ listing, git and tabs, in the theme's colors. This is rich's markup:
 background color, and bold. A literal [ is written \[.
 #}
 {% macro swatch(name, color, width=15) %}[{{ color }}]████[/] {{ name.ljust(width) }}[{{ ui.text_dim }}]{{ color }}[/]{% endmacro %}
+{# Permissions as eza shows them: the kind of file, then each letter in its color (bold for the owner's, and the
+   owner's x underlined on a file) and each dash dimmed. #}
+{% macro perms(text) %}{% for ch in text %}{% if loop.first %}[{{ {'d': 'bold ' ~ file.directory, 'l': file.symlink, '|': file.special}.get(ch, ui.text) }}]{{ ch }}[/]{% elif ch == '-' %}[{{ ui.text_dim }}]-[/]{% else %}[{{ 'bold ' if loop.index <= 4 else '' }}{{ 'underline ' if loop.index == 4 and text[0] in '.|' else '' }}{{ {'r': permissions.read, 'w': permissions.write, 'x': permissions.execute}[ch] }}]{{ ch }}[/]{% endif %}{% endfor %}{% endmacro %}
 [bold]ANSI colors[/]
 {% for name in ansi[:8] %}
   {{ swatch(name, colors[name]) }}    {{ swatch('bright_' ~ name, colors['bright_' ~ name]) }}
@@ -25,17 +28,17 @@ background color, and bold. A literal [ is written \[.
   [{{ git.modified }}]changed[/] [{{ git.behind }}]behind[/] [{{ git.ahead }}]ahead[/]
 
 [bold]Files[/]
-  [{{ ui.text_faint }}]drwxr-xr-x[/]  [{{ colors.green }}]   -[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]--[/] [bold {{ file.directory }}]src[/]
-  [{{ ui.text_faint }}]lrwxrwxrwx[/]  [{{ colors.green }}]   -[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
-  [{{ ui.text_faint }}]-rwxr-xr-x[/]  [{{ colors.green }}]1.2k[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}] 840[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ ui.text_faint }}]--[/] [{{ file.script }}]setup.sh[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]2.1k[/] [{{ ui.text_faint }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.text_faint }}]-[/] [{{ file.plain }}]README.md[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}] 14M[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]3.4M[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.media }}]photo.png[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]220k[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.document }}]report.pdf[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}] 48k[/] [{{ ui.text_faint }}] 7 Oct 18:40[/] [{{ ui.text_faint }}]--[/] [{{ file.compiled }}]main.o[/]
-  [{{ ui.text_faint }}]-rw-r--r--[/]  [{{ colors.green }}]2.0k[/] [{{ ui.text_faint }}] 6 Oct 09:03[/] [{{ ui.text_faint }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
-  [{{ ui.text_faint }}]prw-r--r--[/]  [{{ colors.green }}]   -[/] [{{ ui.text_faint }}] 6 Oct 09:03[/] [{{ ui.text_faint }}]--[/] [underline {{ file.special }}]pipe[/]
+  {{ perms('drwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [bold {{ file.directory }}]src[/]
+  {{ perms('lrwxrwxrwx') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
+  {{ perms('.rwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]1.2k[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 840[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [{{ file.script }}]setup.sh[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.1k[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.text_dim }}]-[/] [{{ file.plain }}]README.md[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 14M[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]3.4M[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.media }}]photo.png[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]220k[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.document }}]report.pdf[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 48k[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.compiled }}]main.o[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.0k[/] [{{ ui.text_dim }}] 6 Oct 09:03[/] [{{ ui.text_dim }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
+  {{ perms('|rw-r--r--') }} [{{ ui.alert }}]root[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 6 Oct 09:03[/] [{{ ui.text_dim }}]--[/] [underline {{ file.special }}]pipe[/]
 
 [bold]Git status[/]
   [{{ git.added }}]A [/] src/added.py
@@ -55,6 +58,6 @@ background color, and bold. A literal [ is written \[.
   [{{ chrome.text }} on {{ chrome.active }}] 󰞷 [/] [bold {{ chrome.text }} on {{ ui.highlight }}] 1 [/][{{ chrome.text }} on {{ ui.bright_highlight }}] editor [/] [{{ chrome.text }} on {{ chrome.inactive }}] 2 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] shell [/]
 
 [bold]Text[/]
-  Normal text, [{{ ui.text_dim }}]dimmed text[/] and [{{ ui.text_faint }}]faint text[/]. A link: [underline {{ ui.url }}]https://example.com[/]
+  Normal text and [{{ ui.text_dim }}]dimmed text[/]. A link: [underline {{ ui.url }}]https://example.com[/]
   [{{ ui.selection_text }} on {{ ui.selection }}] selected text [/] and the cursor [on {{ ui.cursor }}] [/]
   [{{ messages.descriptions }}]-- a description --[/]  [{{ messages.messages }}]-- a message --[/]  [{{ messages.warnings }}]-- no matches found --[/]

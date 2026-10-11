@@ -49,7 +49,6 @@ fg4 = "#928374"
 background = "black"
 text = "fg0"
 text_dim = "fg3"
-text_faint = "fg4"
 highlight = "yellow"
 bright_highlight = "bright_yellow"
 urgent = "bright_yellow"
@@ -82,6 +81,13 @@ media = "bright_magenta"
 document = "bright_magenta"
 compiled = "yellow"
 temp = "bright_black"
+
+# The permissions in a file listing: what each letter is colored by.
+[roles.permissions]
+read = "yellow"
+write = "red"
+execute = "green"
+special = "magenta"
 
 # Version control.
 [roles.git]
