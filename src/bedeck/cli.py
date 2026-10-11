@@ -33,6 +33,12 @@ Output = Annotated[
     "--output", "-o", file_okay=False, help="The directory to write to."
   ),
 ]
+Style = Annotated[
+  str,
+  typer.Option(
+    "--style", "-s", help="How the colors are arranged, e.g. in an editor."
+  ),
+]
 Yes = Annotated[
   bool,
   typer.Option("--yes", "-y", help="Overwrite existing files without asking."),
@@ -85,11 +91,12 @@ def build(
   theme: Theme,
   output: Output,
   icons: Icons = None,
+  style: Style = "gruvbox",
   yes: Yes = False,
 ) -> None:
   """Build the theme files, e.g. eza's theme and mini.icons' config."""
   try:
-    bedeck.build.build(icons, theme, output, yes)
+    bedeck.build.build(icons, theme, style, output, yes)
   except bedeck.errors.BedeckError as error:
     typer.echo(f"bedeck: {error}", err=True)
     raise typer.Exit(1) from error

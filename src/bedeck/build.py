@@ -10,6 +10,11 @@ import bedeck.icons
 import bedeck.theme
 
 
+# bedeck's templates, and its styles: each is a directory of templates.
+TEMPLATES = pathlib.Path(__file__).parent / "templates"
+STYLES = pathlib.Path(__file__).parent / "styles"
+
+
 def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
   """The icons for eza to match by name, for both files and directories."""
   # eza matches directories by name in filenames too, so it can't tell a file
@@ -95,20 +100,40 @@ def git(color: bedeck.theme.Color) -> str:
   return ("" if color.ansi < 8 else "bright") + NAMES[color.ansi % 8]
 
 
+def is_dark(theme: bedeck.theme.Theme) -> bool:
+  """Whether the theme's background is darker than its text."""
+
+  def brightness(color: str) -> int:
+    return sum(int(color[i : i + 2], 16) for i in (1, 3, 5))
+
+  ui = theme.roles["ui"]
+  return brightness(ui["background"]) < brightness(ui["text"])
+
+
 def build(
   icons: pathlib.Path | None,
   theme: pathlib.Path,
+  style: str,
   output: pathlib.Path,
   yes: bool,
 ) -> None:
   """Render each template (e.g. eza.yml.jinja) to the output directory (as
-  eza.yml), asking before overwriting a file unless `yes`. They all get the
-  same context, and use what they need of it."""
+  eza.yml), asking before overwriting a file unless `yes`. The templates are
+  bedeck's and those of the style, which is how the colors are arranged in e.g.
+  an editor. They all get the same context, and use what they need of it."""
+  styles = {path.name: path for path in STYLES.iterdir() if path.is_dir()}
+  if style not in styles:
+    raise bedeck.errors.BedeckError(
+      f"unknown style {style}: the styles are {', '.join(sorted(styles))}"
+    )
   loaded = bedeck.theme.load(theme)
   colors, roles = loaded
   icon_colors, data = bedeck.icons.load(icons, loaded)
   context = {
     "colors": colors,
+    "roles": roles,
+    "ansi": bedeck.theme.ANSI,
+    "background": "dark" if is_dark(loaded) else "light",
     # The colors icons can have: ANSI ones, file roles and the icons' extras.
     "icon_colors": icon_colors,
     "icons": data,
@@ -121,7 +146,7 @@ def build(
   # Each group of roles is a name of its own, e.g. ui.text.
   context |= roles
   env = jinja2.Environment(
-    loader=jinja2.PackageLoader("bedeck"),
+    loader=jinja2.FileSystemLoader([TEMPLATES, styles[style]]),
     trim_blocks=True,
     lstrip_blocks=True,
     keep_trailing_newline=True,
