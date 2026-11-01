@@ -52,22 +52,46 @@ text = "fg0"
 text_dim = "fg3"
 highlight = "yellow"
 bright_highlight = "bright_yellow"
-urgent = "bright_yellow"
 alert = "red"
 url = "blue"
 cursor = "fg4"
+# The terminal's own selection, and a selected region in an editor or shell
+# (e.g. nvim's visual mode) which keeps the text's colors.
 selection = "fg0"
 selection_text = "fg4"
+region = "bg3"
+# The background of the selected item of a menu (e.g. zsh's completions).
+menu_selected = "bg2"
 
-# Window-like things: tabs, window borders, bars.
+# Window-like things: the multiplexer's bar and tabs, and pane borders. The
+# accent is the blocks at either end of the bar.
 [roles.chrome]
-active = "blue"
-active_bright = "bright_blue"
-inactive = "bright_black"
-inactive_bright = "white"
-unfocused = "bg_hard"
+accent = "blue"
+accent_text = "black"
+bar = "bg1"
+tab_active = "fg3"
+tab_active_text = "bg0"
+tab_inactive = "bg2"
+tab_inactive_text = "fg3"
+border = "bg3"
+border_active = "fg3"
+
+# The desktop shell: its bar, workspaces, window borders, menus, dialogs and
+# notifications. Muted is its secondary text (e.g. the bar's clock), and urgent
+# is for lines and text while urgent_fill is for filled backgrounds.
+[roles.desktop]
+background = "bg_hard"
+focused = "blue"
+inactive = "bg2"
+muted = "bright_black"
+urgent = "bright_red"
+urgent_fill = "red"
+
+# Search matches, and the current one, as the background of the text color.
+[roles.search]
+match = "bright_yellow"
+current = "bright_accent1"
 text = "black"
-indicator = "magenta"
 
 # Kinds of file.
 [roles.file]
@@ -120,3 +144,27 @@ ok = "bright_green"
 descriptions = "green"
 messages = "magenta"
 warnings = "red"
+
+# The parts of code, e.g. as a shell highlights a command line.
+[roles.syntax]
+command = "bright_green"
+builtin = "bright_accent1"
+keyword = "bright_red"
+error = "bright_red"
+string = "bright_green"
+variable = "bright_blue"
+operator = "bright_accent1"
+comment = "bright_black"
+
+# A fuzzy finder's list (e.g. fzf's): matches, the prompt and marked items, its
+# info and borders, and the current line.
+[roles.picker]
+match = "bright_accent1"
+prompt = "bright_red"
+marker = "bright_green"
+info = "bright_black"
+border = "fg1"
+separator = "bg2"
+line = "bg2"
+line_text = "bright_white"
+gutter = "bg1"

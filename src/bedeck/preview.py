@@ -28,7 +28,7 @@ def show(theme: pathlib.Path) -> None:
     markup = template.render(context | roles)
     ui = roles["ui"]
     style = f"{ui['text']} on {ui['background']}"
-    border = f"{roles['chrome']['active']} on {ui['background']}"
+    border = f"{roles['chrome']['accent']} on {ui['background']}"
   except (jinja2.UndefinedError, KeyError) as error:
     raise bedeck.errors.BedeckError(
       f"{theme}: the preview needs a color or role it doesn't have: {error}"

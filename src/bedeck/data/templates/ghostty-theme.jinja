@@ -1,0 +1,16 @@
+{#
+ghostty's colors, as a theme (themes/bedeck) which its config names: the cursor,
+selection, background and foreground, and the 16 ANSI colors.
+#}
+cursor-color = {{ ui.cursor }}
+
+background = {{ ui.background }}
+foreground = {{ ui.text }}
+selection-foreground = {{ ui.selection_text }}
+selection-background = {{ ui.selection }}
+
+# The 16 ANSI colors: black, red, green, yellow, blue, magenta, cyan and white,
+# then their bright variants.
+{% for name in ansi %}
+palette = {{ loop.index0 }}={{ colors[name] }}
+{% endfor %}

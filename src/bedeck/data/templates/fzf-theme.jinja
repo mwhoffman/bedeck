@@ -1,0 +1,11 @@
+{#
+fzf's colors, which .zshrc points $FZF_DEFAULT_OPTS_FILE at.
+#}
+# fzf colors. This starts from fzf's 16-color theme, so anything not set below
+# follows the terminal's palette.
+--color=16
+--color=hl:{{ picker.match | fzf }},hl+:{{ picker.match | fzf }},pointer:{{ picker.match | fzf }}
+--color=marker:{{ picker.marker | fzf }},prompt:{{ picker.prompt | fzf }}
+--color=info:{{ picker.info | fzf }},header:{{ picker.info | fzf }}
+--color=fg+:{{ picker.line_text | fzf }},bg+:{{ picker.line | fzf }},gutter:{{ picker.gutter | fzf }}
+--color=border:{{ picker.border | fzf }},separator:{{ picker.separator | fzf }},scrollbar:{{ picker.separator | fzf }}

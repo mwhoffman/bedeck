@@ -1,6 +1,7 @@
 """Build the theme files, by rendering each of the package's templates."""
 
 import pathlib
+import re
 
 import jinja2
 import rich.prompt
@@ -36,6 +37,16 @@ def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
   return bedeck.icons.by_name(
     {name: icon for name, icon in names.items() if name not in clashes}
   )
+
+
+def used(entries: dict, text: str, prefix: str) -> dict:
+  """The entries that the text refers to as prefix.name, e.g. ui.text (but not
+  ui.text_dim), so a template can leave out those it doesn't use."""
+  return {
+    name: value
+    for name, value in entries.items()
+    if re.search(rf"\b{re.escape(prefix)}\.{re.escape(name)}\b", text)
+  }
 
 
 def lua_string(text: str) -> str:
@@ -100,6 +111,11 @@ def git(color: bedeck.theme.Color) -> str:
   return ("" if color.ansi < 8 else "bright") + NAMES[color.ansi % 8]
 
 
+def fzf(color: bedeck.theme.Color) -> str:
+  """A color as fzf's --color takes it: a number (e.g. 11), or else hex."""
+  return str(color) if color.ansi is None else str(color.ansi)
+
+
 def is_dark(theme: bedeck.theme.Theme) -> bool:
   """Whether the theme's background is darker than its text."""
 
@@ -154,6 +170,7 @@ def build(
   )
   env.filters |= {"ord": ord, "lua_string": lua_string}
   env.filters |= {"sgr": sgr, "eza": eza, "tmux": tmux, "zsh": zsh, "git": git}
+  env.filters |= {"fzf": fzf, "used": used}
   # Render them all first, so a problem with one leaves nothing half built.
   files = {
     output / name.removesuffix(".jinja"): env.get_template(name).render(context)

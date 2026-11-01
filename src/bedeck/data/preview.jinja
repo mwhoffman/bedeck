@@ -51,11 +51,24 @@ background color, and bold. A literal [ is written \[.
   [on {{ diff.added }}]{{ '+ a line that was added'.ljust(44) }}[/]
   [on {{ diff.changed }}]{{ '~ a line that was changed'.ljust(44) }}[/]
 
-[bold]Terminal tabs[/]
-  [{{ chrome.text }} on {{ chrome.active }}] 1 [/][{{ chrome.text }} on {{ chrome.active_bright }}] zsh [/] [{{ chrome.text }} on {{ chrome.inactive }}] 2 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] nvim [/] [{{ ui.alert }} on {{ chrome.inactive }}] 󰂚 [/][{{ chrome.text }} on {{ chrome.inactive }}]3 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] logs [/]
+[bold]Desktop[/]
+  [on {{ desktop.background }}] [{{ ui.text }} on {{ desktop.focused }}] 1 [/] [{{ desktop.muted }} on {{ desktop.inactive }}] 2 [/] [{{ ui.text }} on {{ desktop.urgent_fill }}] 3 [/]{{ ' ' * 20 }}[{{ desktop.muted }}]󰍛 12%   10:42[/] [/]
+  [{{ desktop.inactive }} on {{ desktop.background }}]│[/][on {{ desktop.background }}] [{{ ui.text }}]A notification[/] [{{ desktop.muted }}]with details[/] [{{ desktop.urgent }}]and an error[/] [/][{{ desktop.inactive }} on {{ desktop.background }}]│[/]
 
-[bold]Multiplexer tabs[/]
-  [{{ chrome.text }} on {{ chrome.active }}] 󰞷 [/] [bold {{ chrome.text }} on {{ ui.highlight }}] 1 [/][{{ chrome.text }} on {{ ui.bright_highlight }}] editor [/] [{{ chrome.text }} on {{ chrome.inactive }}] 2 [/][{{ chrome.text }} on {{ chrome.inactive_bright }}] shell [/]
+[bold]Multiplexer[/]
+  [bold {{ chrome.accent_text }} on {{ chrome.accent }}] 󰞷 [/][bold {{ chrome.tab_active_text }} on {{ chrome.tab_active }}] 1:nvim [/][{{ chrome.tab_inactive_text }} on {{ chrome.tab_inactive }}] 2:zsh [/][{{ chrome.tab_inactive_text }} on {{ chrome.tab_inactive }}] [{{ ui.alert }}]󰂚[/] 3:logs [/][on {{ chrome.bar }}]{{ ' ' * 12 }}[/][bold {{ chrome.accent_text }} on {{ chrome.accent }}] 󰆍 main [/]
+  [{{ chrome.border }}]──────────────┬[/][{{ chrome.border_active }}]────────────── [/][{{ ui.text }} on {{ chrome.bar }}]:command prompt [/]
+
+[bold]Search and menus[/]
+  [{{ search.text }} on {{ search.match }}] a match [/] [{{ search.text }} on {{ search.current }}] the current match [/] [on {{ ui.region }}] a selected region [/] [bold on {{ ui.menu_selected }}] a selected menu item [/]
+
+[bold]Syntax[/]
+  [bold {{ syntax.command }}]grep[/] [{{ syntax.variable }}]-rn[/] [{{ syntax.string }}]'todo'[/] [{{ syntax.operator }}]|[/] [{{ syntax.builtin }}]echo[/] [{{ syntax.variable }}]"$HOME"[/] [{{ syntax.operator }}]&&[/] [{{ syntax.keyword }}]if[/] [bold {{ syntax.error }}]nosuchcmd[/] [{{ syntax.comment }}]# a comment[/]
+
+[bold]Picker[/]
+  [{{ picker.prompt }}]  [/]src[{{ picker.info }}]  3/120[/]
+  [{{ picker.gutter }} on {{ picker.gutter }}]▌[/][{{ picker.line_text }} on {{ picker.line }}][{{ picker.match }}]▌[/] [{{ picker.match }}]src[/]/bedeck/build.py {{ ' ' * 14 }}[/]
+  [{{ picker.gutter }} on {{ picker.gutter }}]▌[/][{{ picker.marker }}]▌[/] [{{ picker.match }}]src[/]/bedeck/theme.py
 
 [bold]Text[/]
   Normal text and [{{ ui.text_dim }}]dimmed text[/]. A link: [underline {{ ui.url }}]https://example.com[/]

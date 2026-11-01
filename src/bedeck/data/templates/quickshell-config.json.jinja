@@ -1,0 +1,16 @@
+{#
+Quickshell's shared settings (config.json next to shell.qml): only its theme
+colors, so every other setting keeps its default. The backdrop and shadow alpha
+aren't theme colors, so they're left at their defaults too.
+#}
+{
+  "theme": {
+    "bg": "{{ desktop.background }}",
+    "focused": "{{ desktop.focused }}",
+    "inactive": "{{ desktop.inactive }}",
+    "active": "{{ desktop.muted }}",
+    "text": "{{ ui.text }}",
+    "urgent": "{{ desktop.urgent }}",
+    "urgentFill": "{{ desktop.urgent_fill }}"
+  }
+}
