@@ -51,26 +51,50 @@ background color, and bold. A literal [ is written \[.
   [on {{ diff.added }}]{{ '+ a line that was added'.ljust(44) }}[/]
   [on {{ diff.changed }}]{{ '~ a line that was changed'.ljust(44) }}[/]
 
-[bold]Desktop[/]
-  [on {{ desktop.background }}] [{{ ui.text }} on {{ desktop.focused }}] 1 [/] [{{ desktop.muted }} on {{ desktop.inactive }}] 2 [/] [{{ ui.text }} on {{ desktop.urgent_fill }}] 3 [/]{{ ' ' * 20 }}[{{ desktop.muted }}]󰍛 12%   10:42[/] [/]
-  [{{ desktop.inactive }} on {{ desktop.background }}]│[/][on {{ desktop.background }}] [{{ ui.text }}]A notification[/] [{{ desktop.muted }}]with details[/] [{{ desktop.urgent }}]and an error[/] [/][{{ desktop.inactive }} on {{ desktop.background }}]│[/]
-
 [bold]Multiplexer[/]
-  [bold {{ chrome.accent_text }} on {{ chrome.accent }}] 󰞷 [/][bold {{ chrome.tab_active_text }} on {{ chrome.tab_active }}] 1:nvim [/][{{ chrome.tab_inactive_text }} on {{ chrome.tab_inactive }}] 2:zsh [/][{{ chrome.tab_inactive_text }} on {{ chrome.tab_inactive }}] [{{ ui.alert }}]󰂚[/] 3:logs [/][on {{ chrome.bar }}]{{ ' ' * 12 }}[/][bold {{ chrome.accent_text }} on {{ chrome.accent }}] 󰆍 main [/]
-  [{{ chrome.border }}]──────────────┬[/][{{ chrome.border_active }}]────────────── [/][{{ ui.text }} on {{ chrome.bar }}]:command prompt [/]
+{# The status bar as tmux's status.conf draws it: the accent blocks at either
+   end, then tabs that each end in an angled separator colored from the tab into
+   whatever follows it, except between two inactive tabs, where it's a thin one
+   in the bar's color. The right block's items are split the same way. A bell in
+   a tab is the tab's own color. #}
+{% set sep, thin = '\ue0b0', '\ue0b1' %}
+{% set a, a_text, bar = chrome.accent, chrome.accent_text, chrome.bar %}
+{% set on, on_text = chrome.tab_active, chrome.tab_active_text %}
+{% set off, off_text = chrome.tab_inactive, chrome.tab_inactive_text %}
+  [{{ a_text }} on {{ a }}] 󰞷 [/][{{ a }} on {{ on }}]{{ sep }}[/][bold {{ on_text }} on {{ on }}] 1:nvim [/][{{ on }} on {{ off }}]{{ sep }}[/][{{ off_text }} on {{ off }}] 2:zsh [/][{{ bar }} on {{ off }}]{{ thin }}[/][{{ off_text }} on {{ off }}] 󰂚 3:logs [/][{{ off }} on {{ bar }}]{{ sep }}[/][on {{ bar }}]{{ ' ' * 12 }}[/][bold {{ bar }} on {{ a }}]{{ sep }}[/][bold {{ a_text }} on {{ a }}] 󰂚 [/][bold {{ bar }} on {{ a }}]{{ thin }}[/][bold {{ a_text }} on {{ a }}] 󰆍 main [/][bold {{ bar }} on {{ a }}]{{ thin }}[/][bold {{ a_text }} on {{ a }}] {{ '\uf17c' }} host [/]
 
-[bold]Search and menus[/]
-  [{{ search.text }} on {{ search.match }}] a match [/] [{{ search.text }} on {{ search.current }}] the current match [/] [on {{ ui.region }}] a selected region [/] [bold on {{ ui.menu_selected }}] a selected menu item [/]
+[bold]Search and selection[/]
+  [{{ search.text }} on {{ search.match }}] a match [/] [{{ search.text }} on {{ search.current }}] the current match [/] [on {{ ui.region }}] a selected region [/]
 
 [bold]Syntax[/]
   [bold {{ syntax.command }}]grep[/] [{{ syntax.variable }}]-rn[/] [{{ syntax.string }}]'todo'[/] [{{ syntax.operator }}]|[/] [{{ syntax.builtin }}]echo[/] [{{ syntax.variable }}]"$HOME"[/] [{{ syntax.operator }}]&&[/] [{{ syntax.keyword }}]if[/] [bold {{ syntax.error }}]nosuchcmd[/] [{{ syntax.comment }}]# a comment[/]
 
+[bold]Completion[/]
+{# zsh's completion menu, as .zshrc formats it: each group's description is
+   bold, the items are in their dircolors colors, and the selected item is bold
+   on the menu's background with no color of its own. Messages and warnings
+   start with a space. #}
+  [bold {{ messages.descriptions }}]-- local directory --[/]
+  [bold {{ file.directory }}]output/[/]  [bold on {{ ui.menu_selected }}]src/[/]  [bold {{ file.directory }}]themes/[/]
+  [bold {{ messages.descriptions }}]-- file --[/]
+  [{{ file.plain }}]README.md[/]  [{{ file.plain }}]pyproject.toml[/]  [{{ file.plain }}]uv.lock[/]
+   [{{ messages.messages }}]-- a message --[/]   [{{ messages.warnings }}]-- no matches found --[/]
+
 [bold]Picker[/]
-  [{{ picker.prompt }}]  [/]src[{{ picker.info }}]  3/120[/]
-  [{{ picker.gutter }} on {{ picker.gutter }}]▌[/][{{ picker.line_text }} on {{ picker.line }}][{{ picker.match }}]▌[/] [{{ picker.match }}]src[/]/bedeck/build.py {{ ' ' * 14 }}[/]
-  [{{ picker.gutter }} on {{ picker.gutter }}]▌[/][{{ picker.marker }}]▌[/] [{{ picker.match }}]src[/]/bedeck/theme.py
+{# fzf, in its reverse layout (the prompt at the top, as in tmux's pickers),
+   with the first line marked and the cursor on the one below it. The prompt and
+   the query, which is bold, come first, then the info and a separator, then the
+   list. Lines start with the gutter; the current line is bold, with the pointer,
+   and filled to its end; a marked line has the marker in place of the space
+   after the gutter. #}
+{% set m, gutter = picker.match, picker.gutter %}
+  [{{ picker.prompt }}] {{ '\uf105' }} [/][bold]src[/]
+  [{{ picker.info }}]  4/6 (1)[/] [{{ picker.separator }}]{{ '─' * 34 }}[/]
+  [{{ gutter }}]▌[/][{{ picker.marker }}]┃[/][{{ m }}]src[/]/bedeck/cli.py
+  [bold {{ m }} on {{ picker.line }}]▌[/][bold {{ picker.line_text }} on {{ picker.line }}] [{{ m }}]src[/]{{ '/bedeck/build.py'.ljust(40) }}[/]
+  [{{ gutter }}]▌[/] [{{ m }}]src[/]/bedeck/theme.py
+  [{{ gutter }}]▌[/] docs/[{{ m }}]s[/]ou[{{ m }}]rc[/]es.md
 
 [bold]Text[/]
-  Normal text and [{{ ui.text_dim }}]dimmed text[/]. A link: [underline {{ ui.url }}]https://example.com[/]
+  Normal text and [{{ ui.text_dim }}]dimmed text[/].
   [{{ ui.selection_text }} on {{ ui.selection }}] selected text [/] and the cursor [on {{ ui.cursor }}] [/]
-  [{{ messages.descriptions }}]-- a description --[/]  [{{ messages.messages }}]-- a message --[/]  [{{ messages.warnings }}]-- no matches found --[/]
