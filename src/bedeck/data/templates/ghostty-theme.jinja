@@ -6,8 +6,9 @@ cursor-color = {{ ui.cursor }}
 
 background = {{ ui.background }}
 foreground = {{ ui.text }}
-selection-foreground = {{ ui.selection_text }}
-selection-background = {{ ui.selection }}
+# Selected text keeps its own colors (cell-foreground needs ghostty 1.2).
+selection-foreground = cell-foreground
+selection-background = {{ ui.region }}
 
 # The 16 ANSI colors: black, red, green, yellow, blue, magenta, cyan and white,
 # then their bright variants.

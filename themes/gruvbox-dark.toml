@@ -54,12 +54,11 @@ highlight = "yellow"
 bright_highlight = "bright_yellow"
 alert = "red"
 cursor = "fg4"
-# The terminal's own selection, and a selected region in an editor or shell
-# (e.g. nvim's visual mode) which keeps the text's colors.
-selection = "fg0"
-selection_text = "fg4"
+# Selected text, e.g. the terminal's selection or nvim's visual mode: the
+# background behind it, as the text keeps its own colors.
 region = "bg3"
-# The background of the selected item of a menu (e.g. zsh's completions).
+# The background of the current item in a list or menu, e.g. zsh's completions,
+# fzf's current line or tmux's pickers. Its text is the normal text.
 menu_selected = "bg2"
 
 # Window-like things: the multiplexer's bar and tabs, and pane borders. The
@@ -156,7 +155,7 @@ operator = "bright_accent1"
 comment = "bright_black"
 
 # A fuzzy finder's list (e.g. fzf's): matches, the prompt and marked items, its
-# info and borders, and the current line.
+# info and borders. Its current line is ui.menu_selected.
 [roles.picker]
 match = "bright_accent1"
 prompt = "bright_red"
@@ -164,6 +163,4 @@ marker = "bright_green"
 info = "bright_black"
 border = "fg1"
 separator = "bg2"
-line = "bg2"
-line_text = "bright_white"
 gutter = "bg1"

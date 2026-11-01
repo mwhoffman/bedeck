@@ -24,7 +24,7 @@ background color, and bold. A literal [ is written \[.
 {% endfor %}
 
 [bold]Prompt[/]
-  [bold {{ ui.bright_highlight }}]host[/]  [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/] 
+  [bold {{ ui.bright_highlight }}]host[/]  [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/]  [{{ ui.cursor }}]▏[/]
   [{{ git.modified }}]changed[/] [{{ git.behind }}]behind[/] [{{ git.ahead }}]ahead[/]
 
 [bold]Files[/]
@@ -63,9 +63,6 @@ background color, and bold. A literal [ is written \[.
 {% set off, off_text = chrome.tab_inactive, chrome.tab_inactive_text %}
   [{{ a_text }} on {{ a }}] 󰞷 [/][{{ a }} on {{ on }}]{{ sep }}[/][bold {{ on_text }} on {{ on }}] 1:nvim [/][{{ on }} on {{ off }}]{{ sep }}[/][{{ off_text }} on {{ off }}] 2:zsh [/][{{ bar }} on {{ off }}]{{ thin }}[/][{{ off_text }} on {{ off }}] 󰂚 3:logs [/][{{ off }} on {{ bar }}]{{ sep }}[/][on {{ bar }}]{{ ' ' * 12 }}[/][bold {{ bar }} on {{ a }}]{{ sep }}[/][bold {{ a_text }} on {{ a }}] 󰂚 [/][bold {{ bar }} on {{ a }}]{{ thin }}[/][bold {{ a_text }} on {{ a }}] 󰆍 main [/][bold {{ bar }} on {{ a }}]{{ thin }}[/][bold {{ a_text }} on {{ a }}] {{ '\uf17c' }} host [/]
 
-[bold]Search and selection[/]
-  [{{ search.text }} on {{ search.match }}] a match [/] [{{ search.text }} on {{ search.current }}] the current match [/] [on {{ ui.region }}] a selected region [/]
-
 [bold]Syntax[/]
   [bold {{ syntax.command }}]grep[/] [{{ syntax.variable }}]-rn[/] [{{ syntax.string }}]'todo'[/] [{{ syntax.operator }}]|[/] [{{ syntax.builtin }}]echo[/] [{{ syntax.variable }}]"$HOME"[/] [{{ syntax.operator }}]&&[/] [{{ syntax.keyword }}]if[/] [bold {{ syntax.error }}]nosuchcmd[/] [{{ syntax.comment }}]# a comment[/]
 
@@ -91,10 +88,12 @@ background color, and bold. A literal [ is written \[.
   [{{ picker.prompt }}] {{ '\uf105' }} [/][bold]src[/]
   [{{ picker.info }}]  4/6 (1)[/] [{{ picker.separator }}]{{ '─' * 34 }}[/]
   [{{ gutter }}]▌[/][{{ picker.marker }}]┃[/][{{ m }}]src[/]/bedeck/cli.py
-  [bold {{ m }} on {{ picker.line }}]▌[/][bold {{ picker.line_text }} on {{ picker.line }}] [{{ m }}]src[/]{{ '/bedeck/build.py'.ljust(40) }}[/]
+  [bold {{ m }} on {{ ui.menu_selected }}]▌[/][bold {{ ui.text }} on {{ ui.menu_selected }}] [{{ m }}]src[/]{{ '/bedeck/build.py'.ljust(40) }}[/]
   [{{ gutter }}]▌[/] [{{ m }}]src[/]/bedeck/theme.py
   [{{ gutter }}]▌[/] docs/[{{ m }}]s[/]ou[{{ m }}]rc[/]es.md
 
 [bold]Text[/]
-  Normal text and [{{ ui.text_dim }}]dimmed text[/].
-  [{{ ui.selection_text }} on {{ ui.selection }}] selected text [/] and the cursor [on {{ ui.cursor }}] [/]
+{# Selected text keeps its own colors, so the region is shown behind text in a
+   few colors. #}
+  [on {{ ui.region }}] a selected region keeps [{{ syntax.string }}]its[/] [{{ syntax.keyword }}]own[/] [{{ syntax.variable }}]colors[/] [/]
+  [{{ search.text }} on {{ search.match }}] a match [/] [{{ search.text }} on {{ search.current }}] the current match [/]
