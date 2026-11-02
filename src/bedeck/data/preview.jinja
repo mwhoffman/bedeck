@@ -24,8 +24,10 @@ background color, and bold. A literal [ is written \[.
 {% endfor %}
 
 [bold]Prompt[/]
-  [bold {{ ui.bright_highlight }}]host[/]  [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/]  [{{ ui.cursor }}]▏[/]
-  [{{ git.modified }}]changed[/] [{{ git.behind }}]behind[/] [{{ git.ahead }}]ahead[/]
+{# The host, then the icons of the watched repos needing attention, then the
+   directory and its branch, separated by single carets and ended by a double
+   one. #}
+  [bold {{ ui.bright_highlight }}]host[/] › [bold {{ git.pending }}]󰒓 󰠮[/] › [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/] » [{{ ui.cursor }}]▏[/]
 
 [bold]Files[/]
   {{ perms('drwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [bold {{ file.directory }}]src[/]

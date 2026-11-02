@@ -118,9 +118,9 @@ added = "bright_green"
 modified = "yellow"
 deleted = "bright_red"
 untracked = "red"
-ahead = "green"
-behind = "magenta"
 branch = "bright_cyan"
+# Repos with pending work (local changes, or ahead of or behind their upstream).
+pending = "bright_accent1"
 
 # The backgrounds of the lines of a diff: each is a color mixed into the
 # background, so that text stays readable on it.
