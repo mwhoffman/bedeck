@@ -4,7 +4,7 @@ import pathlib
 
 import jinja2
 import rich.console
-import rich.panel
+import rich.padding
 import rich.text
 
 import bedeck.errors
@@ -16,8 +16,7 @@ PREVIEW = pathlib.Path(__file__).parent / "data/preview.jinja"
 
 
 def show(theme: pathlib.Path) -> None:
-  """Print the preview of a theme, on the theme's background and in a box of
-  its window chrome color."""
+  """Print the preview of a theme, on the theme's background."""
   colors, roles = bedeck.theme.load(theme)
   env = jinja2.Environment(
     trim_blocks=True, lstrip_blocks=True, undefined=jinja2.StrictUndefined
@@ -28,14 +27,10 @@ def show(theme: pathlib.Path) -> None:
     markup = template.render(context | roles)
     ui = roles["ui"]
     style = f"{ui['text']} on {ui['background']}"
-    border = f"{roles['chrome']['accent']} on {ui['background']}"
   except (jinja2.UndefinedError, KeyError) as error:
     raise bedeck.errors.BedeckError(
       f"{theme}: the preview needs a color or role it doesn't have: {error}"
     ) from error
   text = rich.text.Text.from_markup(markup, emoji=False)
   console = rich.console.Console(highlight=False)
-  panel = rich.panel.Panel(
-    text, style=style, border_style=border, padding=(1, 2), expand=False
-  )
-  console.print(panel)
+  console.print(rich.padding.Padding(text, (1, 2), style=style, expand=False))

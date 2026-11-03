@@ -1,7 +1,7 @@
 {#
 lualine's theme for the bedeck colorscheme, in the gruvbox style: lualine's own
-gruvbox theme, with the theme's colors. lualine finds it by the colorscheme's
-name, as lualine/themes/bedeck.lua.
+gruvbox theme, with the theme's colors, and some of it set from the theme's
+roles. lualine finds it by the colorscheme's name, as lualine/themes/bedeck.lua.
 #}
 -- This is lualine.nvim's gruvbox theme (https://github.com/nvim-lualine/lualine.nvim),
 -- which is copyright (c) 2020-2021 hoob3rt and has the MIT license.
@@ -16,37 +16,45 @@ local colors = {
   darkgray = "{{ colors.bg1 }}",
   lightgray = "{{ colors.bg2 }}",
   inactivegray = "{{ colors.bg4 }}",
+  -- From the theme's roles, so the statusline matches the tmux bar: the normal
+  -- mode badge is like the active tab, the second sections like inactive tabs,
+  -- and the middle like the bar.
+  active_bg = "{{ ui.active_bg }}",
+  active_fg = "{{ ui.active_fg }}",
+  inactive_bg = "{{ ui.inactive_bg }}",
+  inactive_fg = "{{ ui.inactive_fg }}",
+  panel = "{{ ui.panel }}",
 }
 
 return {
   normal = {
-    a = {bg = colors.gray, fg = colors.black, gui = "bold"},
-    b = {bg = colors.lightgray, fg = colors.white},
-    c = {bg = colors.darkgray, fg = colors.gray},
+    a = {bg = colors.active_bg, fg = colors.active_fg, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+    c = {bg = colors.panel, fg = colors.inactive_fg},
   },
   insert = {
     a = {bg = colors.blue, fg = colors.black, gui = "bold"},
-    b = {bg = colors.lightgray, fg = colors.white},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
     c = {bg = colors.lightgray, fg = colors.white},
   },
   visual = {
     a = {bg = colors.yellow, fg = colors.black, gui = "bold"},
-    b = {bg = colors.lightgray, fg = colors.white},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
     c = {bg = colors.inactivegray, fg = colors.black},
   },
   replace = {
     a = {bg = colors.red, fg = colors.black, gui = "bold"},
-    b = {bg = colors.lightgray, fg = colors.white},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
     c = {bg = colors.black, fg = colors.white},
   },
   command = {
     a = {bg = colors.green, fg = colors.black, gui = "bold"},
-    b = {bg = colors.lightgray, fg = colors.white},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
     c = {bg = colors.inactivegray, fg = colors.black},
   },
   inactive = {
-    a = {bg = colors.darkgray, fg = colors.gray, gui = "bold"},
-    b = {bg = colors.darkgray, fg = colors.gray},
-    c = {bg = colors.darkgray, fg = colors.gray},
+    a = {bg = colors.panel, fg = colors.inactive_fg, gui = "bold"},
+    b = {bg = colors.panel, fg = colors.inactive_fg},
+    c = {bg = colors.panel, fg = colors.inactive_fg},
   },
 }

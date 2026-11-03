@@ -83,11 +83,18 @@ def mix(color: str, into: str, amount: float) -> str:
   return "#" + "".join(f"{part:02x}" for part in parts)
 
 
+def is_role(value: str, groups: dict[str, dict]) -> bool:
+  """Whether a value names a role, e.g. ui.text, of the given groups."""
+  group, _, name = value.partition(".")
+  return group in groups and name in groups[group]
+
+
 def load(path: pathlib.Path) -> Theme:
   """Read a theme file: returns its colors and its roles. A color can be given
   as another color's name (e.g. black = "bg0") rather than as hex. A role (e.g.
-  roles.ui.text) is given as a color's name, or as a mix of one color into
-  another (e.g. {mix = "green", into = "bg0", amount = 0.4})."""
+  roles.ui.text) is given as a color's name, as another role's name (e.g.
+  ui.dim, so that the two match), or as a mix of one color into another (e.g.
+  {mix = "green", into = "bg0", amount = 0.4})."""
   data = read_toml(path)
   colors = data.get("colors")
   if not isinstance(colors, dict):
@@ -103,16 +110,24 @@ def load(path: pathlib.Path) -> Theme:
   expected = "a color like #rrggbb or another color's name"
   errors = bad_colors("colors", resolved, expected)
 
-  roles = {}
+  # Each group's entries, as given. A role naming another role (e.g. ui.dim) is
+  # resolved once all the others are, below.
+  entries_by_group = {}
   for group, entries in data.get("roles", {}).items():
-    if not isinstance(entries, dict):
+    if isinstance(entries, dict):
+      entries_by_group[group] = entries
+    else:
       errors.append(f"roles.{group}: expected a section of roles")
-      continue
-    roles[group] = {}
+
+  roles = {group: {} for group in entries_by_group}
+  references = {}
+  for group, entries in entries_by_group.items():
     for name, value in entries.items():
       match value:
         case str() if value in resolved:
           roles[group][name] = Color(resolved[value], value)
+        case str() if is_role(value, entries_by_group):
+          references[f"{group}.{name}"] = value
         case {
           "mix": str() as color,
           "into": str() as into,
@@ -126,9 +141,26 @@ def load(path: pathlib.Path) -> Theme:
           roles[group][name] = Color(mixed, f"{color} into {into}")
         case _:
           errors.append(
-            f"roles.{group}.{name}: expected the name of a color, or a mix "
-            'like {mix = "green", into = "bg0", amount = 0.4}'
+            f"roles.{group}.{name}: expected the name of a color or of another "
+            'role (e.g. ui.text), or a mix like {mix = "green", into = "bg0", '
+            "amount = 0.4}"
           )
+
+  # Follow each reference to a role that's a color, stopping at one already
+  # seen (which is a cycle). A role with an error of its own is reported as
+  # such, not again by the roles naming it.
+  for role, value in references.items():
+    seen = {role}
+    while value in references and value not in seen:
+      seen.add(value)
+      value = references[value]
+    if value in seen:
+      errors.append(f"roles.{role}: names itself, via {value}")
+      continue
+    group, name = role.split(".", 1)
+    target_group, target = value.split(".", 1)
+    if target in roles[target_group]:
+      roles[group][name] = roles[target_group][target]
 
   if errors:
     raise bedeck.errors.BedeckError(

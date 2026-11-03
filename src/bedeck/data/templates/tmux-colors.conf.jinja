@@ -5,32 +5,31 @@ search matches and command prompt.
 #}
 # tmux colors, sourced by tmux.conf and used by status.conf.
 
-# The blocks at either end of the bar, and alerts (e.g. synchronized panes).
-set -g @fg "{{ chrome.accent_text | tmux }}"
-set -g @bg "{{ ui.background | tmux }}"
-set -g @accent "{{ chrome.accent | tmux }}"
-set -g @alert_fg "{{ ui.alert | tmux }}"
-set -g @alert_bg "{{ ui.alert | tmux }}"
+# The blocks at either end of the bar, and the left one while panes are
+# synchronized (an alert).
+set -g @fg "{{ ui.accent_fg | tmux }}"
+set -g @accent "{{ ui.accent_bg | tmux }}"
+set -g @alert_fg "{{ ui.alert_fg | tmux }}"
+set -g @alert_bg "{{ ui.alert_bg | tmux }}"
 
 # The bar (the space after the tabs) and the window tabs: the active one stands
 # out, and the others are muted.
-set -g @bar_bg "{{ chrome.bar | tmux }}"
-set -g @tab_active_fg "{{ chrome.tab_active_text | tmux }}"
-set -g @tab_active_bg "{{ chrome.tab_active | tmux }}"
-set -g @tab_inactive_fg "{{ chrome.tab_inactive_text | tmux }}"
-set -g @tab_inactive_bg "{{ chrome.tab_inactive | tmux }}"
+set -g @bar_bg "{{ ui.panel | tmux }}"
+set -g @tab_active_fg "{{ ui.active_fg | tmux }}"
+set -g @tab_active_bg "{{ ui.active_bg | tmux }}"
+set -g @tab_inactive_fg "{{ ui.inactive_fg | tmux }}"
+set -g @tab_inactive_bg "{{ ui.inactive_bg | tmux }}"
 
-# The pane borders (splits). The active pane's border is the active tab's
-# color.
+# The pane borders (splits): the active pane's is the active tab's color.
 set -g @border_bg "{{ ui.background | tmux }}"
-set -g @border_active "{{ chrome.border_active | tmux }}"
-set -g @border_inactive "{{ chrome.border | tmux }}"
+set -g @border_active "{{ ui.active_bg | tmux }}"
+set -g @border_inactive "{{ ui.border | tmux }}"
 
 # Popups (e.g. the session picker): the panes' colors, with a border like the
 # active pane's.
 set -g @popup_fg "{{ ui.text | tmux }}"
 set -g @popup_bg "{{ ui.background | tmux }}"
-set -g @popup_border "{{ chrome.border_active | tmux }}"
+set -g @popup_border "{{ ui.active_bg | tmux }}"
 
 # The current item in the pickers (e.g. the window tree) and menus, like the
 # current item in zsh's completions and fzf.
@@ -50,6 +49,6 @@ set -g @current_match_bg "{{ search.current | tmux }}"
 # The command prompt: while typing it's the text on the bar, so it reads as part
 # of the bar, and in vi normal mode (after Esc) it's like the active tab.
 set -g @prompt_fg "{{ ui.text | tmux }}"
-set -g @prompt_bg "{{ chrome.bar | tmux }}"
-set -g @prompt_normal_fg "{{ chrome.tab_active_text | tmux }}"
-set -g @prompt_normal_bg "{{ chrome.tab_active | tmux }}"
+set -g @prompt_bg "{{ ui.panel | tmux }}"
+set -g @prompt_normal_fg "{{ ui.active_fg | tmux }}"
+set -g @prompt_normal_bg "{{ ui.active_bg | tmux }}"

@@ -40,8 +40,8 @@ def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
 
 
 def used(entries: dict, text: str, prefix: str) -> dict:
-  """The entries that the text refers to as prefix.name, e.g. ui.text (but not
-  ui.text_dim), so a template can leave out those it doesn't use."""
+  """The entries that the text refers to as prefix.name, e.g. ui.alert (but not
+  ui.alert_bg), so a template can leave out those it doesn't use."""
   return {
     name: value
     for name, value in entries.items()

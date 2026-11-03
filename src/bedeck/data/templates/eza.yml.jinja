@@ -43,8 +43,8 @@ users:
   user_root: {foreground: {{ ui.alert | eza }}}
   group_root: {foreground: {{ ui.alert | eza }}}
 
-punctuation: {foreground: {{ ui.text_dim | eza }}}
-date: {foreground: {{ ui.text_dim | eza }}}
+punctuation: {foreground: {{ ui.dim | eza }}}
+date: {foreground: {{ ui.dim | eza }}}
 perms:
   user_read: {foreground: {{ permissions.read | eza }}}
   user_write: {foreground: {{ permissions.write | eza }}}
@@ -58,7 +58,7 @@ perms:
   other_execute: {foreground: {{ permissions.execute | eza }}}
   special_user_file: {foreground: {{ permissions.special | eza }}}
   special_other: {foreground: {{ permissions.special | eza }}}
-  attribute: {foreground: {{ ui.text_dim | eza }}}
+  attribute: {foreground: {{ ui.dim | eza }}}
 
 {% macro escape(glyph) -%}
 {% set code = glyph | ord -%}

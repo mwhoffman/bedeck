@@ -4,10 +4,10 @@ listing, git and tabs, in the theme's colors. This is rich's markup:
 [STYLE]text[/] styles the text, where a style is e.g. a color, "on" a
 background color, and bold. A literal [ is written \[.
 #}
-{% macro swatch(name, color, width=15) %}[{{ color }}]████[/] {{ name.ljust(width) }}[{{ ui.text_dim }}]{{ color }}[/]{% endmacro %}
+{% macro swatch(name, color, width=15) %}[{{ color }}]████[/] {{ name.ljust(width) }}[{{ ui.dim }}]{{ color }}[/]{% endmacro %}
 {# Permissions as eza shows them: the kind of file, then each letter in its color (bold for the owner's, and the
    owner's x underlined on a file) and each dash dimmed. #}
-{% macro perms(text) %}{% for ch in text %}{% if loop.first %}[{{ {'d': 'bold ' ~ file.directory, 'l': file.symlink, '|': file.special}.get(ch, ui.text) }}]{{ ch }}[/]{% elif ch == '-' %}[{{ ui.text_dim }}]-[/]{% else %}[{{ 'bold ' if loop.index <= 4 else '' }}{{ 'underline ' if loop.index == 4 and text[0] in '.|' else '' }}{{ {'r': permissions.read, 'w': permissions.write, 'x': permissions.execute}[ch] }}]{{ ch }}[/]{% endif %}{% endfor %}{% endmacro %}
+{% macro perms(text) %}{% for ch in text %}{% if loop.first %}[{{ {'d': 'bold ' ~ file.directory, 'l': file.symlink, '|': file.special}.get(ch, ui.text) }}]{{ ch }}[/]{% elif ch == '-' %}[{{ ui.dim }}]-[/]{% else %}[{{ 'bold ' if loop.index <= 4 else '' }}{{ 'underline ' if loop.index == 4 and text[0] in '.|' else '' }}{{ {'r': permissions.read, 'w': permissions.write, 'x': permissions.execute}[ch] }}]{{ ch }}[/]{% endif %}{% endfor %}{% endmacro %}
 [bold]ANSI colors[/]
 {% for name in ansi[:8] %}
   {{ swatch(name, colors[name]) }}    {{ swatch('bright_' ~ name, colors['bright_' ~ name]) }}
@@ -27,20 +27,20 @@ background color, and bold. A literal [ is written \[.
 {# The host, then the icons of the watched repos needing attention, then the
    directory and its branch, separated by single carets and ended by a double
    one. #}
-  [bold {{ ui.bright_highlight }}]host[/] › [bold {{ git.pending }}]󰒓 󰠮[/] › [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/] » [{{ ui.cursor }}]▏[/]
+  [bold {{ ui.highlight }}]host[/] › [bold {{ git.pending }}]󰒓 󰠮[/] › [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/] » [{{ ui.cursor }}]▏[/]
 
 [bold]Files[/]
-  {{ perms('drwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [bold {{ file.directory }}]src[/]
-  {{ perms('lrwxrwxrwx') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
-  {{ perms('.rwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]1.2k[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 840[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ ui.text_dim }}]--[/] [{{ file.script }}]setup.sh[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.1k[/] [{{ ui.text_dim }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.text_dim }}]-[/] [{{ file.plain }}]README.md[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 14M[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]3.4M[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.media }}]photo.png[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]220k[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.document }}]report.pdf[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 48k[/] [{{ ui.text_dim }}] 7 Oct 18:40[/] [{{ ui.text_dim }}]--[/] [{{ file.compiled }}]main.o[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.0k[/] [{{ ui.text_dim }}] 6 Oct 09:03[/] [{{ ui.text_dim }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
-  {{ perms('|rw-r--r--') }} [{{ ui.alert }}]root[/]  [{{ ui.text_dim }}]   -[/] [{{ ui.text_dim }}] 6 Oct 09:03[/] [{{ ui.text_dim }}]--[/] [underline {{ file.special }}]pipe[/]
+  {{ perms('drwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.dim }}]   -[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [bold {{ file.directory }}]src[/]
+  {{ perms('lrwxrwxrwx') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.dim }}]   -[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
+  {{ perms('.rwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]1.2k[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 840[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [{{ file.script }}]setup.sh[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.1k[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.dim }}]-[/] [{{ file.plain }}]README.md[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 14M[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]3.4M[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.media }}]photo.png[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]220k[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.document }}]report.pdf[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 48k[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.compiled }}]main.o[/]
+  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.0k[/] [{{ ui.dim }}] 6 Oct 09:03[/] [{{ ui.dim }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
+  {{ perms('|rw-r--r--') }} [{{ ui.alert }}]root[/]  [{{ ui.dim }}]   -[/] [{{ ui.dim }}] 6 Oct 09:03[/] [{{ ui.dim }}]--[/] [underline {{ file.special }}]pipe[/]
 
 [bold]Git status[/]
   [{{ git.added }}]A [/] src/added.py
@@ -60,9 +60,9 @@ background color, and bold. A literal [ is written \[.
    in the bar's color. The right block's items are split the same way. A bell in
    a tab is the tab's own color. #}
 {% set sep, thin = '\ue0b0', '\ue0b1' %}
-{% set a, a_text, bar = chrome.accent, chrome.accent_text, chrome.bar %}
-{% set on, on_text = chrome.tab_active, chrome.tab_active_text %}
-{% set off, off_text = chrome.tab_inactive, chrome.tab_inactive_text %}
+{% set a, a_text, bar = ui.accent_bg, ui.accent_fg, ui.panel %}
+{% set on, on_text = ui.active_bg, ui.active_fg %}
+{% set off, off_text = ui.inactive_bg, ui.inactive_fg %}
   [{{ a_text }} on {{ a }}] 󰞷 [/][{{ a }} on {{ on }}]{{ sep }}[/][bold {{ on_text }} on {{ on }}] 1:nvim [/][{{ on }} on {{ off }}]{{ sep }}[/][{{ off_text }} on {{ off }}] 2:zsh [/][{{ bar }} on {{ off }}]{{ thin }}[/][{{ off_text }} on {{ off }}] 󰂚 3:logs [/][{{ off }} on {{ bar }}]{{ sep }}[/][on {{ bar }}]{{ ' ' * 12 }}[/][bold {{ bar }} on {{ a }}]{{ sep }}[/][bold {{ a_text }} on {{ a }}] 󰂚 [/][bold {{ bar }} on {{ a }}]{{ thin }}[/][bold {{ a_text }} on {{ a }}] 󰆍 main [/][bold {{ bar }} on {{ a }}]{{ thin }}[/][bold {{ a_text }} on {{ a }}] {{ '\uf17c' }} host [/]
 
 [bold]Syntax[/]
@@ -73,11 +73,11 @@ background color, and bold. A literal [ is written \[.
    bold, the items are in their dircolors colors, and the selected item is bold
    on the menu's background with no color of its own. Messages and warnings
    start with a space. #}
-  [bold {{ messages.descriptions }}]-- local directory --[/]
+  [bold {{ ui.dim }}]-- local directory --[/]
   [bold {{ file.directory }}]output/[/]  [bold on {{ ui.menu_selected }}]src/[/]  [bold {{ file.directory }}]themes/[/]
-  [bold {{ messages.descriptions }}]-- file --[/]
+  [bold {{ ui.dim }}]-- file --[/]
   [{{ file.plain }}]README.md[/]  [{{ file.plain }}]pyproject.toml[/]  [{{ file.plain }}]uv.lock[/]
-   [{{ messages.messages }}]-- a message --[/]   [{{ messages.warnings }}]-- no matches found --[/]
+   [{{ diagnostics.info }}]-- a message --[/]   [{{ diagnostics.warning }}]-- no matches found --[/]
 
 [bold]Picker[/]
 {# fzf, in its reverse layout (the prompt at the top, as in tmux's pickers),

@@ -11,16 +11,16 @@ syntax-highlighting, autosuggestions and vi-mode plugins.
 typeset -gA THEME_COLORS=(
   # The host, directory and git branch in the prompt, and the icons of repos
   # needing attention.
-  host '{{ ui.bright_highlight | zsh }}'
+  host '{{ ui.highlight | zsh }}'
   directory '{{ file.directory | zsh }}'
   branch '{{ git.branch | zsh }}'
   repos '{{ git.pending | zsh }}'
 
   # The descriptions (e.g. of completion groups), messages and warnings shown
   # when completing.
-  completion_description '{{ messages.descriptions | zsh }}'
-  completion_message '{{ messages.messages | zsh }}'
-  completion_warning '{{ messages.warnings | zsh }}'
+  completion_description '{{ ui.dim | zsh }}'
+  completion_message '{{ diagnostics.info | zsh }}'
+  completion_warning '{{ diagnostics.warning | zsh }}'
 )
 
 # Extra list-colors entries for completion menus, appended after $LS_COLORS:

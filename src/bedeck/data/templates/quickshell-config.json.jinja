@@ -1,16 +1,26 @@
 {#
 Quickshell's shared settings (config.json next to shell.qml): only its theme
-colors, so every other setting keeps its default. The backdrop and shadow alpha
-aren't theme colors, so they're left at their defaults too.
+colors, so every other setting keeps its default. Its keys match the ui roles,
+e.g. active and activeText are ui.active_bg and ui.active_fg. The backdrop and
+shadow alpha aren't theme colors, so they're left at their defaults too.
 #}
 {
   "theme": {
-    "bg": "{{ desktop.background }}",
-    "focused": "{{ desktop.focused }}",
-    "inactive": "{{ desktop.inactive }}",
-    "active": "{{ desktop.muted }}",
+    "bg": "{{ ui.desktop_background }}",
     "text": "{{ ui.text }}",
-    "urgent": "{{ desktop.urgent }}",
-    "urgentFill": "{{ desktop.urgent_fill }}"
+    "dim": "{{ ui.dim }}",
+    "disabled": "{{ ui.disabled }}",
+    "focused": "{{ ui.focused_bg }}",
+    "focusedText": "{{ ui.focused_fg }}",
+    "active": "{{ ui.active_bg }}",
+    "activeText": "{{ ui.active_fg }}",
+    "inactive": "{{ ui.inactive_bg }}",
+    "inactiveText": "{{ ui.inactive_fg }}",
+    "border": "{{ ui.border }}",
+    "selection": "{{ ui.region }}",
+    "menuSelected": "{{ ui.menu_selected }}",
+    "alert": "{{ ui.alert }}",
+    "alertFill": "{{ ui.alert_bg }}",
+    "alertFillText": "{{ ui.alert_fg }}"
   }
 }
