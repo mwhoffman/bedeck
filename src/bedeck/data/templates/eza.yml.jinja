@@ -14,21 +14,22 @@ file_type:
   source: {foreground: Default, is_bold: false}
   crypto: {foreground: Default, is_bold: false}
   document: {foreground: {{ file.document | eza }}, is_bold: false}
+  compiled: {foreground: {{ file.compiled | eza }}, is_bold: false}
   build: {foreground: Default, is_bold: false, is_underline: true}
 
 size:
-  major: {foreground: {{ colors.green | eza }}, is_bold: false}
-  minor: {foreground: {{ colors.green | eza }}, is_bold: false}
-  number_byte: {foreground: {{ colors.green | eza }}, is_bold: false}
-  number_kilo: {foreground: {{ colors.green | eza }}, is_bold: false}
-  number_mega: {foreground: {{ colors.green | eza }}, is_bold: false}
-  number_giga: {foreground: {{ colors.green | eza }}, is_bold: false}
-  number_huge: {foreground: {{ colors.green | eza }}, is_bold: false}
-  unit_byte: {foreground: {{ colors.green | eza }}, is_bold: false}
-  unit_kilo: {foreground: {{ colors.green | eza }}, is_bold: false}
-  unit_mega: {foreground: {{ colors.green | eza }}, is_bold: false}
-  unit_giga: {foreground: {{ colors.green | eza }}, is_bold: false}
-  unit_huge: {foreground: {{ colors.green | eza }}, is_bold: false}
+  major: {foreground: {{ file.size | eza }}, is_bold: false}
+  minor: {foreground: {{ file.size | eza }}, is_bold: false}
+  number_byte: {foreground: {{ file.size | eza }}, is_bold: false}
+  number_kilo: {foreground: {{ file.size | eza }}, is_bold: false}
+  number_mega: {foreground: {{ file.size | eza }}, is_bold: false}
+  number_giga: {foreground: {{ file.size | eza }}, is_bold: false}
+  number_huge: {foreground: {{ file.size | eza }}, is_bold: false}
+  unit_byte: {foreground: {{ file.size | eza }}, is_bold: false}
+  unit_kilo: {foreground: {{ file.size | eza }}, is_bold: false}
+  unit_mega: {foreground: {{ file.size | eza }}, is_bold: false}
+  unit_giga: {foreground: {{ file.size | eza }}, is_bold: false}
+  unit_huge: {foreground: {{ file.size | eza }}, is_bold: false}
 
 git:
   new: {foreground: {{ git.added | eza }}}

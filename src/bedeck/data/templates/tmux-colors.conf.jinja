@@ -33,12 +33,12 @@ set -g @popup_border "{{ ui.active_bg | tmux }}"
 
 # The current item in the pickers (e.g. the window tree) and menus, like the
 # current item in zsh's completions and fzf.
-set -g @selection_fg "{{ ui.text | tmux }}"
-set -g @selection_bg "{{ ui.menu_selected | tmux }}"
+set -g @current_fg "{{ ui.current_fg | tmux }}"
+set -g @current_bg "{{ ui.current_bg | tmux }}"
 
 # Selected text in copy mode: the background behind it, as the text keeps its
 # own colors.
-set -g @region_bg "{{ ui.region | tmux }}"
+set -g @selection_bg "{{ ui.selection_bg | tmux }}"
 
 # Copy mode search matches, and the current match.
 set -g @match_fg "{{ search.text | tmux }}"

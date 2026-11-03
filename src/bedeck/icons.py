@@ -93,11 +93,12 @@ def load(
   theme: bedeck.theme.Theme,
 ) -> tuple[dict[str, str], Icons]:
   """Read bedeck's icons and then an icons file (if given), whose entries add to
-  or replace bedeck's. Returns the colors the icons can have, as {name: hex},
-  and the icons, as {section: {name: Icon}} with the sections in SECTIONS' order
-  and their entries sorted by name. The colors are the ANSI ones, the theme's
-  file roles (e.g. file.media) and the icons' extra ones (e.g.
-  extra_colors.azure)."""
+  or replace bedeck's. Returns the colors the icons use, as {name: hex}, and
+  the icons, as {section: {name: Icon}} with the sections in SECTIONS' order and
+  their entries sorted by name. An icon's color can be an ANSI one, one of the
+  theme's file roles (e.g. file.media) or one of the icons' extra ones (e.g.
+  extra_colors.azure); only those some icon uses are returned, so that templates
+  don't define highlights nothing uses."""
   data: dict[str, dict] = {}
   source = {}  # the file each entry came from, for reporting errors in it
   errors: dict[pathlib.Path, list[str]] = {}
@@ -168,7 +169,8 @@ def load(
         for path, messages in errors.items()
       )
     )
-  return colors, result
+  used = {icon.color for entries in result.values() for icon in entries.values()}
+  return {name: hex for name, hex in colors.items() if name in used}, result
 
 
 def show(

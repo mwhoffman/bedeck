@@ -1188,19 +1188,30 @@ end
 -- Selected regions, search matches and window separators, so that they match
 -- the shell and multiplexer. Search matches are reversed, so the match color is
 -- the foreground.
-groups.Visual.bg = ui.region
+groups.Visual.bg = ui.selection_bg
 groups.Search.fg = search.match
 groups.Search.bg = search.text
 groups.IncSearch.fg = search.current
 groups.IncSearch.bg = search.text
 groups.WinSeparator.fg = ui.border
 
+-- Menus and pickers, like zsh's completions and fzf: the completion menu is a
+-- panel, the current item (or a picker's current line) is bold on its own
+-- background, and matched characters are a picker's matches.
+groups.Pmenu = {fg = ui.text, bg = ui.panel}
+groups.PmenuSel = {fg = ui.current_fg, bg = ui.current_bg, bold = config.bold}
+groups.SnacksPickerListCursorLine = {bg = ui.current_bg, bold = config.bold}
+groups.SnacksPickerMatch = {fg = picker.match}
+groups.CmpItemAbbrMatch = {fg = picker.match, bold = config.bold}
+groups.CmpItemAbbrMatchFuzzy = {link = "CmpItemAbbrMatch"}
+groups.BlinkCmpLabelMatch = {link = "CmpItemAbbrMatch"}
+
 -- Side panels (e.g. neo-tree's), and the status line which matches them so
 -- that it and the window separators "disappear".
 groups.NeoTreeNormal = {bg = ui.panel}
 groups.NeoTreeNormalNC = {link = "NeoTreeNormal"}
 groups.NeoTreeSignColumn = {link = "NeoTreeNormal"}
-groups.NeoTreeCursorLine = {bg = colors.bg3}
+groups.NeoTreeCursorLine = {bg = ui.current_bg}
 groups.StatusLine.fg = ui.panel
 
 -- Directories.

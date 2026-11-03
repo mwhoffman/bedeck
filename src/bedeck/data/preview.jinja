@@ -30,17 +30,17 @@ background color, and bold. A literal [ is written \[.
   [bold {{ ui.highlight }}]host[/] › [bold {{ git.pending }}]󰒓 󰠮[/] › [bold {{ file.directory }}]~/projects/bedeck[/] on [{{ git.branch }}] [bold]main ✓*?[/][/] » [{{ ui.cursor }}]▏[/]
 
 [bold]Files[/]
-  {{ perms('drwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.dim }}]   -[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [bold {{ file.directory }}]src[/]
-  {{ perms('lrwxrwxrwx') }} [bold {{ ui.highlight }}]user[/]  [{{ ui.dim }}]   -[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
-  {{ perms('.rwxr-xr-x') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]1.2k[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 840[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [{{ file.script }}]setup.sh[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.1k[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.dim }}]-[/] [{{ file.plain }}]README.md[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 14M[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]3.4M[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.media }}]photo.png[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]220k[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.document }}]report.pdf[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}] 48k[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.compiled }}]main.o[/]
-  {{ perms('.rw-r--r--') }} [bold {{ ui.highlight }}]user[/]  [{{ colors.green }}]2.0k[/] [{{ ui.dim }}] 6 Oct 09:03[/] [{{ ui.dim }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
-  {{ perms('|rw-r--r--') }} [{{ ui.alert }}]root[/]  [{{ ui.dim }}]   -[/] [{{ ui.dim }}] 6 Oct 09:03[/] [{{ ui.dim }}]--[/] [underline {{ file.special }}]pipe[/]
+  {{ perms('drwxr-xr-x') }} [{{ ui.dim }}]   -[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [bold {{ file.directory }}]src[/]
+  {{ perms('lrwxrwxrwx') }} [{{ ui.dim }}]   -[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [{{ file.symlink }}]current[/] -> [bold {{ file.directory }}]src[/]
+  {{ perms('.rwxr-xr-x') }} [{{ file.size }}]1.2k[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]-[/][{{ git.modified }}]M[/] [bold {{ file.executable }}]build[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}] 840[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ ui.dim }}]--[/] [{{ file.script }}]setup.sh[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}]2.1k[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 8 Oct 10:12[/] [{{ git.added }}]N[/][{{ ui.dim }}]-[/] [{{ file.plain }}]README.md[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}] 14M[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.archive }}]backup.tar.gz[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}]3.4M[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.media }}]photo.png[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}]220k[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.document }}]report.pdf[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}] 48k[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 7 Oct 18:40[/] [{{ ui.dim }}]--[/] [{{ file.compiled }}]main.o[/]
+  {{ perms('.rw-r--r--') }} [{{ file.size }}]2.0k[/] [bold {{ ui.highlight }}]user[/] [{{ ui.dim }}] 6 Oct 09:03[/] [{{ ui.dim }}]-[/][{{ git.deleted }}]D[/] [{{ file.temp }}]notes.txt~[/]
+  {{ perms('|rw-r--r--') }} [{{ ui.dim }}]   -[/] [{{ ui.alert }}]root[/] [{{ ui.dim }}] 6 Oct 09:03[/] [{{ ui.dim }}]--[/] [underline {{ file.special }}]pipe[/]
 
 [bold]Git status[/]
   [{{ git.added }}]A [/] src/added.py
@@ -74,7 +74,7 @@ background color, and bold. A literal [ is written \[.
    on the menu's background with no color of its own. Messages and warnings
    start with a space. #}
   [bold {{ ui.dim }}]-- local directory --[/]
-  [bold {{ file.directory }}]output/[/]  [bold on {{ ui.menu_selected }}]src/[/]  [bold {{ file.directory }}]themes/[/]
+  [bold {{ file.directory }}]output/[/]  [bold {{ ui.current_fg }} on {{ ui.current_bg }}]src/[/]  [bold {{ file.directory }}]themes/[/]
   [bold {{ ui.dim }}]-- file --[/]
   [{{ file.plain }}]README.md[/]  [{{ file.plain }}]pyproject.toml[/]  [{{ file.plain }}]uv.lock[/]
    [{{ diagnostics.info }}]-- a message --[/]   [{{ diagnostics.warning }}]-- no matches found --[/]
@@ -90,12 +90,12 @@ background color, and bold. A literal [ is written \[.
   [{{ picker.prompt }}] {{ '\uf105' }} [/][bold]src[/]
   [{{ picker.info }}]  4/6 (1)[/] [{{ picker.separator }}]{{ '─' * 34 }}[/]
   [{{ gutter }}]▌[/][{{ picker.marker }}]┃[/][{{ m }}]src[/]/bedeck/cli.py
-  [bold {{ m }} on {{ ui.menu_selected }}]▌[/][bold {{ ui.text }} on {{ ui.menu_selected }}] [{{ m }}]src[/]{{ '/bedeck/build.py'.ljust(40) }}[/]
+  [bold {{ m }} on {{ ui.current_bg }}]▌[/][bold {{ ui.current_fg }} on {{ ui.current_bg }}] [{{ m }}]src[/]{{ '/bedeck/build.py'.ljust(40) }}[/]
   [{{ gutter }}]▌[/] [{{ m }}]src[/]/bedeck/theme.py
   [{{ gutter }}]▌[/] docs/[{{ m }}]s[/]ou[{{ m }}]rc[/]es.md
 
 [bold]Text[/]
-{# Selected text keeps its own colors, so the region is shown behind text in a
+{# Selected text keeps its own colors, so the selection is shown behind text in a
    few colors. #}
-  [on {{ ui.region }}] a selected region keeps [{{ syntax.string }}]its[/] [{{ syntax.keyword }}]own[/] [{{ syntax.variable }}]colors[/] [/]
+  [on {{ ui.selection_bg }}] a selection keeps [{{ syntax.string }}]its[/] [{{ syntax.keyword }}]own[/] [{{ syntax.variable }}]colors[/] [/]
   [{{ search.text }} on {{ search.match }}] a match [/] [{{ search.text }} on {{ search.current }}] the current match [/]

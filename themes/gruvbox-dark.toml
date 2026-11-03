@@ -67,10 +67,11 @@ alert = "bright_red"
 border = "ui.inactive_bg"
 # Selected text, e.g. the terminal's selection or nvim's visual mode: the
 # background behind it, as the text keeps its own colors.
-region = "bg3"
-# The background of the current item in a list or menu, e.g. zsh's completions,
-# fzf's current line or tmux's pickers. Its text is the normal text, in bold.
-menu_selected = "bg2"
+selection_bg = "bg3"
+# The current item in a list or menu, e.g. zsh's completions, fzf's current
+# line, tmux's pickers or nvim's completion menu. Its text is bold.
+current_bg = "bg2"
+current_fg = "ui.text"
 # The accent: the blocks at either end of a bar.
 accent_bg = "blue"
 accent_fg = "black"
@@ -94,7 +95,7 @@ match = "bright_yellow"
 current = "bright_accent1"
 text = "black"
 
-# Kinds of file.
+# Kinds of file, and the size column in file listings (e.g. eza's).
 [roles.file]
 plain = "bright_white"
 script = "bright_white"
@@ -107,6 +108,7 @@ media = "bright_magenta"
 document = "bright_magenta"
 compiled = "yellow"
 temp = "ui.dim"
+size = "green"
 
 # The permissions in a file listing: what each letter is colored by.
 [roles.permissions]
@@ -126,11 +128,13 @@ branch = "bright_cyan"
 pending = "bright_accent1"
 
 # The backgrounds of the lines of a diff: each is a color mixed into the
-# background, so that text stays readable on it.
+# background, so that text stays readable on it. Changed lines are blue, as
+# yellow turns brown when darkened; the changed text within them is still
+# yellow (nvim's DiffText).
 [roles.diff]
-added = {mix = "green", into = "bg0", amount = 0.4}
-changed = {mix = "yellow", into = "bg0", amount = 0.4}
-deleted = {mix = "red", into = "bg0", amount = 0.4}
+added = {mix = "green", into = "bg0", amount = 0.3}
+changed = {mix = "blue", into = "bg0", amount = 0.3}
+deleted = {mix = "red", into = "bg0", amount = 0.3}
 
 # Problems and messages, e.g. an editor's diagnostics or zsh's completion
 # messages and warnings.
@@ -153,12 +157,12 @@ operator = "bright_accent1"
 comment = "ui.dim"
 
 # A fuzzy finder's list (e.g. fzf's): matches, the prompt and marked items, its
-# info and borders. Its current line is ui.menu_selected.
+# info and borders. Its current line is ui.current_bg.
 [roles.picker]
 match = "search.current"
 prompt = "bright_red"
 marker = "bright_green"
 info = "ui.dim"
 border = "ui.active_bg"
-separator = "bg2"
-gutter = "bg1"
+separator = "ui.border"
+gutter = "ui.panel"

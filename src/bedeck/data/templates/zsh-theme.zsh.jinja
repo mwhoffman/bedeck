@@ -25,12 +25,12 @@ typeset -gA THEME_COLORS=(
 
 # Extra list-colors entries for completion menus, appended after $LS_COLORS:
 # the selected item ("ma") is bold, on the menu's selected background.
-typeset -ga THEME_LIST_COLORS=('ma=1;{{ ui.menu_selected | sgr("bg") }}')
+typeset -ga THEME_LIST_COLORS=('ma=1;{{ ui.current_bg | sgr("bg") }}')
 
 # zle's own highlights: the region (outside of vi visual mode), incremental
 # search (the text on the match color), and no highlighting of pasted text.
 typeset -ga zle_highlight=(
-  region:bg={{ ui.region | zsh }}
+  region:bg={{ ui.selection_bg | zsh }}
   isearch:fg={{ search.text | zsh }},bg={{ search.match | zsh }}
   paste:none
   suffix:bold
@@ -84,5 +84,5 @@ typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg={{ syntax.comment | zsh }}'
 
 # zsh-vi-mode: the visual mode selection, like the region. These must be set
 # before the plugin is sourced.
-typeset -g ZVM_VI_HIGHLIGHT_BACKGROUND='{{ ui.region | zsh }}'
+typeset -g ZVM_VI_HIGHLIGHT_BACKGROUND='{{ ui.selection_bg | zsh }}'
 typeset -g ZVM_VI_HIGHLIGHT_FOREGROUND='{{ ui.text | zsh }}'
