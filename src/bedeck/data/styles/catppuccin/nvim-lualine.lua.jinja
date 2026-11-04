@@ -1,0 +1,55 @@
+{#
+lualine's theme for the colorscheme "theme", in the catppuccin style:
+catppuccin/nvim's lualine theme, with the theme's colors, and some of it set
+from the theme's roles. lualine finds it by the colorscheme's name.
+#}
+-- This is catppuccin/nvim's lualine theme (https://github.com/catppuccin/nvim),
+-- which is copyright (c) 2021 Catppuccin and has the MIT license.
+local colors = {
+  green = "{{ colors.green }}",
+  peach = "{{ colors.peach }}",
+  mauve = "{{ colors.mauve }}",
+  red = "{{ colors.red }}",
+  base = "{{ colors.base }}",
+  -- From the theme's roles, so the statusline matches the tmux bar: the normal
+  -- mode badge is like the active tab, the second sections like inactive tabs,
+  -- and the middle like the bar.
+  active_bg = "{{ ui.active_bg }}",
+  active_fg = "{{ ui.active_fg }}",
+  inactive_bg = "{{ ui.inactive_bg }}",
+  inactive_fg = "{{ ui.inactive_fg }}",
+  panel = "{{ ui.panel }}",
+}
+
+return {
+  normal = {
+    a = {bg = colors.active_bg, fg = colors.active_fg, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+    c = {bg = colors.panel, fg = colors.inactive_fg},
+  },
+  insert = {
+    a = {bg = colors.green, fg = colors.base, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+  },
+  terminal = {
+    a = {bg = colors.green, fg = colors.base, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+  },
+  command = {
+    a = {bg = colors.peach, fg = colors.base, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+  },
+  visual = {
+    a = {bg = colors.mauve, fg = colors.base, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+  },
+  replace = {
+    a = {bg = colors.red, fg = colors.base, gui = "bold"},
+    b = {bg = colors.inactive_bg, fg = colors.inactive_fg},
+  },
+  inactive = {
+    a = {bg = colors.panel, fg = colors.inactive_fg, gui = "bold"},
+    b = {bg = colors.panel, fg = colors.inactive_fg},
+    c = {bg = colors.panel, fg = colors.inactive_fg},
+  },
+}

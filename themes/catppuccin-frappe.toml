@@ -1,0 +1,195 @@
+# The Catppuccin Frappé theme (https://catppuccin.com/palette): its colors, and
+# the roles they're used for. Its roles follow the other themes', using
+# Catppuccin's style guide where it has a convention (e.g. a rosewater cursor,
+# surface0 for the current item), with mauve as the accent and dark text on
+# fills since its colors are light. Build it with the catppuccin style
+# (-s catppuccin).
+
+[colors]
+# Catppuccin's colors, by its names. Its red, green, yellow and blue are also
+# the ANSI ones.
+rosewater = "#f2d5cf"
+flamingo = "#eebebe"
+pink = "#f4b8e4"
+mauve = "#ca9ee6"
+red = "#e78284"
+maroon = "#ea999c"
+peach = "#ef9f76"
+yellow = "#e5c890"
+green = "#a6d189"
+teal = "#81c8be"
+sky = "#99d1db"
+sapphire = "#85c1dc"
+blue = "#8caaee"
+lavender = "#babbf1"
+text = "#c6d0f5"
+subtext1 = "#b5bfe2"
+subtext0 = "#a5adce"
+overlay2 = "#949cbb"
+overlay1 = "#838ba7"
+overlay0 = "#737994"
+surface2 = "#626880"
+surface1 = "#51576d"
+surface0 = "#414559"
+base = "#303446"
+mantle = "#292c3c"
+crust = "#232634"
+
+# The rest of the 16 ANSI colors, as Catppuccin's palette gives them for
+# terminals. As in Dracula, black isn't the background (it's surface1), and the
+# bright colors are slightly deeper versions of the others.
+black = "surface1"
+magenta = "pink"
+cyan = "teal"
+white = "subtext0"
+bright_black = "surface2"
+bright_red = "#e67172"
+bright_green = "#8ec772"
+bright_yellow = "#d9ba73"
+bright_blue = "#7b9ef0"
+bright_magenta = "#f2a4db"
+bright_cyan = "#5abfb5"
+bright_white = "subtext1"
+
+# The background (bg0), and four steps from it towards the text: Catppuccin's
+# surfaces and its first overlay. bg_hard is its darkest background (crust).
+bg_hard = "crust"
+bg0 = "base"
+bg1 = "surface0"
+bg2 = "surface1"
+bg3 = "surface2"
+bg4 = "overlay0"
+
+# The text (fg0), and four steps from it towards the background: Catppuccin's
+# subtexts and overlays. It has no brighter text, so fg_hard is the text.
+fg_hard = "text"
+fg0 = "text"
+fg1 = "subtext1"
+fg2 = "subtext0"
+fg3 = "overlay2"
+fg4 = "overlay1"
+
+# What the colors are used for. Each role is one of the colors above, or
+# another role (e.g. "ui.dim"), so that the two always match.
+
+# The general interface. A plain role is text or lines on the background (e.g.
+# ui.alert). Filled things, like tabs, workspaces and the blocks at either end of
+# a bar, are an _bg and the _fg text on it, and their borders are the _bg color.
+[roles.ui]
+background = "base"
+# The background of the desktop: its bar, dialogs and wallpaper.
+desktop_background = "crust"
+# Bars and side panels, e.g. tmux's bar and nvim's file tree.
+panel = "mantle"
+text = "text"
+# Secondary text, e.g. comments, dates or a bar's clock.
+dim = "overlay1"
+# Text fainter still: placeholders, hints and things switched off.
+disabled = "surface1"
+cursor = "rosewater"
+# Text that stands out (e.g. the host, or your user), and alerts.
+highlight = "yellow"
+alert = "red"
+# Lines between panes and windows, like inactive tabs.
+border = "ui.inactive_bg"
+# Selected text, e.g. the terminal's selection or nvim's visual mode: the
+# background behind it, as the text keeps its own colors.
+selection_bg = "surface1"
+# The current item in a list or menu, e.g. zsh's completions, fzf's current
+# line, tmux's pickers or nvim's completion menu. Its text is bold.
+current_bg = "surface0"
+current_fg = "ui.text"
+# The accent: the blocks at either end of a bar.
+accent_bg = "mauve"
+accent_fg = "base"
+# What has focus on the desktop: the focused workspace and window border, and
+# controls like buttons. The accent's color, with dark text as it's light.
+focused_bg = "ui.accent_bg"
+focused_fg = "base"
+# Active and inactive tabs (and other workspaces), and the borders of the active
+# pane, input or dialog.
+active_bg = "overlay2"
+active_fg = "base"
+inactive_bg = "surface1"
+inactive_fg = "overlay2"
+# Filled alerts, e.g. urgent workspaces or synchronized panes, with dark text.
+alert_bg = "red"
+alert_fg = "base"
+
+# Search matches, and the current one, as the background of the text color.
+[roles.search]
+match = "yellow"
+current = "peach"
+text = "base"
+
+# Kinds of file, and the size column in file listings (e.g. eza's).
+[roles.file]
+plain = "text"
+script = "text"
+directory = "blue"
+symlink = "teal"
+executable = "green"
+special = "red"
+archive = "red"
+media = "pink"
+document = "pink"
+compiled = "yellow"
+temp = "ui.dim"
+size = "green"
+
+# The permissions in a file listing: what each letter is colored by.
+[roles.permissions]
+read = "yellow"
+write = "red"
+execute = "green"
+special = "pink"
+
+# Version control.
+[roles.git]
+added = "green"
+modified = "yellow"
+deleted = "red"
+untracked = "maroon"
+branch = "teal"
+# Repos with pending work (local changes, or ahead of or behind their upstream).
+pending = "peach"
+
+# The backgrounds of the lines of a diff: each is a color mixed into the
+# background, so that text stays readable on it. These are Catppuccin's own
+# amounts, so changed lines are faint and the changed text within them (nvim's
+# DiffText, blue at 0.3) stands out.
+[roles.diff]
+added = {mix = "green", into = "base", amount = 0.18}
+changed = {mix = "blue", into = "base", amount = 0.07}
+deleted = {mix = "red", into = "base", amount = 0.18}
+
+# Problems and messages, e.g. an editor's diagnostics or zsh's completion
+# messages and warnings.
+[roles.diagnostics]
+error = "red"
+warning = "yellow"
+info = "sky"
+hint = "teal"
+ok = "green"
+
+# The parts of code, e.g. as a shell highlights a command line.
+[roles.syntax]
+command = "blue"
+builtin = "peach"
+keyword = "mauve"
+error = "diagnostics.error"
+string = "green"
+variable = "maroon"
+operator = "sky"
+comment = "overlay2"
+
+# A fuzzy finder's list (e.g. fzf's): matches, the prompt and marked items, its
+# info and borders. Its current line is ui.current_bg.
+[roles.picker]
+match = "search.current"
+prompt = "mauve"
+marker = "lavender"
+info = "ui.dim"
+border = "ui.active_bg"
+separator = "ui.border"
+gutter = "ui.panel"

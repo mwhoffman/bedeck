@@ -1,0 +1,177 @@
+# The Dracula theme (https://draculatheme.com/spec): its colors, and the roles
+# they're used for. Its roles follow the gruvbox themes', with Dracula's purple
+# as the accent, dark text on fills since its colors are light, and Dracula's
+# colors for syntax. Build it with the dracula style (-s dracula).
+
+[colors]
+# The 16 ANSI colors in order, as Dracula's spec gives them. Unlike gruvbox,
+# black is darker than the background, and blue is Dracula's purple (it has no
+# blue).
+black = "bg_hard"
+red = "#ff5555"
+green = "#50fa7b"
+yellow = "#f1fa8c"
+blue = "#bd93f9"
+magenta = "#ff79c6"
+cyan = "#8be9fd"
+white = "fg0"
+bright_black = "fg4"
+bright_red = "#ff6e6e"
+bright_green = "#69ff94"
+bright_yellow = "#ffffa5"
+bright_blue = "#d6acff"
+bright_magenta = "#ff92df"
+bright_cyan = "#a4ffff"
+bright_white = "fg_hard"
+
+# Accents: colors the theme has beyond the ANSI ones. Dracula's is orange, which
+# has no bright variant.
+accent1 = "#ffb86c"
+bright_accent1 = "#ffb86c"
+
+# The background (bg0), and four steps from it towards the text: Dracula's
+# lighter backgrounds, its selection, and a step past it (derived). bg_hard is
+# its darker background.
+bg_hard = "#21222c"
+bg0 = "#282a36"
+bg1 = "#343746"
+bg2 = "#424450"
+bg3 = "#44475a"
+bg4 = "#565969"
+
+# The text (fg0), and four steps from it towards the background: greys between
+# the text and background (derived), and Dracula's comment color. fg_hard is a
+# brighter text.
+fg_hard = "#ffffff"
+fg0 = "#f8f8f2"
+fg1 = "#cecfcc"
+fg2 = "#afb0b0"
+fg3 = "#909194"
+fg4 = "#6272a4"
+
+# What the colors are used for. Each role is one of the colors above, or
+# another role (e.g. "ui.dim"), so that the two always match.
+
+# The general interface. A plain role is text or lines on the background (e.g.
+# ui.alert). Filled things, like tabs, workspaces and the blocks at either end of
+# a bar, are an _bg and the _fg text on it, and their borders are the _bg color.
+[roles.ui]
+background = "bg0"
+# The background of the desktop: its bar, dialogs and wallpaper.
+desktop_background = "bg_hard"
+# Bars and side panels, e.g. tmux's bar and nvim's file tree.
+panel = "bg1"
+text = "fg0"
+# Secondary text, e.g. comments, dates or a bar's clock.
+dim = "bright_black"
+# Text fainter still: placeholders, hints and things switched off.
+disabled = "bg2"
+cursor = "ui.dim"
+# Text that stands out (e.g. the host, or your user), and alerts.
+highlight = "bright_yellow"
+alert = "bright_red"
+# Lines between panes and windows, like inactive tabs.
+border = "ui.inactive_bg"
+# Selected text, e.g. the terminal's selection or nvim's visual mode: the
+# background behind it, as the text keeps its own colors.
+selection_bg = "bg3"
+# The current item in a list or menu, e.g. zsh's completions, fzf's current
+# line, tmux's pickers or nvim's completion menu. Its text is bold.
+current_bg = "bg2"
+current_fg = "ui.text"
+# The accent: the blocks at either end of a bar.
+accent_bg = "blue"
+accent_fg = "black"
+# What has focus on the desktop: the focused workspace and window border, and
+# controls like buttons. The accent's color, with dark text as Dracula's purple
+# is light.
+focused_bg = "ui.accent_bg"
+focused_fg = "black"
+# Active and inactive tabs (and other workspaces), and the borders of the active
+# pane, input or dialog.
+active_bg = "fg3"
+active_fg = "black"
+inactive_bg = "bg2"
+inactive_fg = "fg3"
+# Filled alerts, e.g. urgent workspaces or synchronized panes, with dark text as
+# Dracula's red is light.
+alert_bg = "red"
+alert_fg = "black"
+
+# Search matches, and the current one, as the background of the text color.
+[roles.search]
+match = "bright_yellow"
+current = "bright_accent1"
+text = "black"
+
+# Kinds of file, and the size column in file listings (e.g. eza's).
+[roles.file]
+plain = "bright_white"
+script = "bright_white"
+directory = "blue"
+symlink = "bright_cyan"
+executable = "bright_green"
+special = "bright_red"
+archive = "bright_red"
+media = "bright_magenta"
+document = "bright_magenta"
+compiled = "yellow"
+temp = "ui.dim"
+size = "green"
+
+# The permissions in a file listing: what each letter is colored by.
+[roles.permissions]
+read = "yellow"
+write = "red"
+execute = "green"
+special = "magenta"
+
+# Version control.
+[roles.git]
+added = "bright_green"
+modified = "yellow"
+deleted = "bright_red"
+untracked = "red"
+branch = "bright_cyan"
+# Repos with pending work (local changes, or ahead of or behind their upstream).
+pending = "bright_accent1"
+
+# The backgrounds of the lines of a diff: each is a color mixed into the
+# background, so that text stays readable on it. Changed lines are blue, as
+# yellow turns brown when darkened; the changed text within them is still
+# yellow (nvim's DiffText).
+[roles.diff]
+added = {mix = "green", into = "bg0", amount = 0.3}
+changed = {mix = "blue", into = "bg0", amount = 0.3}
+deleted = {mix = "red", into = "bg0", amount = 0.3}
+
+# Problems and messages, e.g. an editor's diagnostics or zsh's completion
+# messages and warnings.
+[roles.diagnostics]
+error = "bright_red"
+warning = "bright_yellow"
+info = "bright_blue"
+hint = "bright_cyan"
+ok = "bright_green"
+
+# The parts of code, e.g. as a shell highlights a command line.
+[roles.syntax]
+command = "green"
+builtin = "cyan"
+keyword = "magenta"
+error = "diagnostics.error"
+string = "yellow"
+variable = "accent1"
+operator = "magenta"
+comment = "ui.dim"
+
+# A fuzzy finder's list (e.g. fzf's): matches, the prompt and marked items, its
+# info and borders. Its current line is ui.current_bg.
+[roles.picker]
+match = "search.current"
+prompt = "bright_red"
+marker = "bright_green"
+info = "ui.dim"
+border = "ui.active_bg"
+separator = "ui.border"
+gutter = "ui.panel"

@@ -1172,11 +1172,8 @@ local groups = {
 }
 {% endraw %}
 
--- Groups set from the theme's roles, and others which differ from gruvbox.nvim.
-
--- Floating windows have the normal background and text.
-groups.NormalFloat = {fg = ui.text, bg = ui.background}
-groups.FloatTitle = {fg = ui.text, bg = ui.background}
+-- Groups which differ from gruvbox.nvim, besides those set from the theme's
+-- roles (below).
 
 -- The sign column is like normal text, and so are the signs in it (gruvbox.nvim
 -- gives both a background).
@@ -1185,102 +1182,16 @@ for _, color in ipairs({"Red", "Green", "Yellow", "Blue", "Purple", "Aqua", "Ora
   groups["Gruvbox" .. color .. "Sign"].bg = nil
 end
 
--- Selected regions, search matches and window separators, so that they match
--- the shell and multiplexer. Search matches are reversed, so the match color is
--- the foreground.
-groups.Visual.bg = ui.selection_bg
-groups.Search.fg = search.match
-groups.Search.bg = search.text
-groups.IncSearch.fg = search.current
-groups.IncSearch.bg = search.text
-groups.WinSeparator.fg = ui.border
-
--- Menus and pickers, like zsh's completions and fzf: the completion menu is a
--- panel, the current item (or a picker's current line) is bold on its own
--- background, and matched characters are a picker's matches.
-groups.Pmenu = {fg = ui.text, bg = ui.panel}
-groups.PmenuSel = {fg = ui.current_fg, bg = ui.current_bg, bold = config.bold}
-groups.SnacksPickerListCursorLine = {bg = ui.current_bg, bold = config.bold}
-groups.SnacksPickerMatch = {fg = picker.match}
-groups.CmpItemAbbrMatch = {fg = picker.match, bold = config.bold}
-groups.CmpItemAbbrMatchFuzzy = {link = "CmpItemAbbrMatch"}
-groups.BlinkCmpLabelMatch = {link = "CmpItemAbbrMatch"}
-
--- Side panels (e.g. neo-tree's), and the status line which matches them so
--- that it and the window separators "disappear".
-groups.NeoTreeNormal = {bg = ui.panel}
-groups.NeoTreeNormalNC = {link = "NeoTreeNormal"}
-groups.NeoTreeSignColumn = {link = "NeoTreeNormal"}
-groups.NeoTreeCursorLine = {bg = ui.current_bg}
+-- The status line matches side panels (see below), so that it and the window
+-- separators "disappear".
 groups.StatusLine.fg = ui.panel
 
--- Directories.
-groups.Directory = {fg = file.directory, bold = true}
-groups.NeoTreeDirectoryName = {link = "Directory"}
-groups.NeoTreeDirectoryIcon = {fg = file.directory}
-
--- Version control.
-groups.GitSignsAdd = {fg = git.added}
-groups.GitSignsChange = {fg = git.modified}
-groups.GitSignsDelete = {fg = git.deleted}
-groups.SignifySignAdd = {link = "GitSignsAdd"}
-groups.SignifySignChange = {link = "GitSignsChange"}
-groups.SignifySignDelete = {link = "GitSignsDelete"}
-groups.NeoTreeGitAdded = {fg = git.added}
-groups.NeoTreeGitStaged = {fg = git.added}
-groups.NeoTreeGitModified = {fg = git.modified}
-groups.NeoTreeGitRenamed = {fg = git.modified}
-groups.NeoTreeGitDeleted = {fg = git.deleted}
-groups.NeoTreeGitUntracked = {fg = git.untracked}
-
--- Diagnostics.
-for name, color in pairs({
-  Error = diagnostics.error,
-  Warn = diagnostics.warning,
-  Info = diagnostics.info,
-  Hint = diagnostics.hint,
-  Ok = diagnostics.ok,
-}) do
-  groups["Diagnostic" .. name] = {fg = color}
-  groups["DiagnosticSign" .. name] = {fg = color}
-  groups["DiagnosticVirtualText" .. name] = {fg = color}
-  groups["DiagnosticUnderline" .. name] = {undercurl = config.undercurl, sp = color}
-end
-
--- Don't give markdown code blocks a background. render-markdown links this to
--- ColorColumn, which virt-column clears when it loads, so otherwise the result
--- depends on which loads first. This links to render-markdown's empty group
--- since a group with no attributes doesn't count as set, and render-markdown
--- would still link it.
-groups.RenderMarkdownCode = {link = "RenderMarkdownPadding"}
-
--- The groups the icons use (see the icons module), one for each of their colors.
-{% for name, color in icon_colors.items() %}
-groups.Icons{{ name.title().replace('_', '').replace('.', '') }} = {fg = "{{ color }}"}
-{% endfor %}
+{% include "_nvim-roles.lua.jinja" %}
 
 for group, settings in pairs(groups) do
   vim.api.nvim_set_hl(0, group, settings)
 end
 {% endset %}
--- The theme's colors.
-{% set used_colors = colors | used(body, "colors") %}
-{% if used_colors %}
-local colors = {
-{% for name, color in used_colors.items() %}
-  {{ name }} = "{{ color }}",
-{% endfor %}
-}
-{% endif %}
-{% for group, entries in roles.items() %}
-{% set used_entries = entries | used(body, group) %}
-{% if used_entries %}
-local {{ group }} = {
-{% for name, color in used_entries.items() %}
-  {{ name }} = "{{ color }}",
-{% endfor %}
-}
-{% endif %}
-{% endfor %}
+{% include "_nvim-locals.lua.jinja" %}
 
 {{ body }}

@@ -1,0 +1,83 @@
+{#
+The nvim highlight groups set from the theme's roles, which every style shares,
+so that nvim matches the shell, multiplexer and desktop. Styles include this
+after their own groups, as `groups`, and then set them all.
+#}
+-- Groups set from the theme's roles.
+
+-- Floating windows have the normal background and text.
+groups.NormalFloat = {fg = ui.text, bg = ui.background}
+groups.FloatTitle = {fg = ui.text, bg = ui.background}
+
+-- Selected regions, search matches and window separators, so that they match
+-- the shell and multiplexer.
+groups.Visual = {bg = ui.selection_bg}
+groups.Search = {fg = search.text, bg = search.match}
+groups.IncSearch = {fg = search.text, bg = search.current}
+groups.CurSearch = {link = "IncSearch"}
+groups.WinSeparator = {fg = ui.border, bg = ui.background}
+
+-- Menus and pickers, like zsh's completions and fzf: the completion menu is a
+-- panel, the current item (or a picker's current line) is bold on its own
+-- background, and matched characters are a picker's matches.
+groups.Pmenu = {fg = ui.text, bg = ui.panel}
+groups.PmenuSel = {fg = ui.current_fg, bg = ui.current_bg, bold = true}
+groups.SnacksPickerListCursorLine = {bg = ui.current_bg, bold = true}
+groups.SnacksPickerMatch = {fg = picker.match}
+groups.CmpItemAbbrMatch = {fg = picker.match, bold = true}
+groups.CmpItemAbbrMatchFuzzy = {link = "CmpItemAbbrMatch"}
+groups.BlinkCmpLabelMatch = {link = "CmpItemAbbrMatch"}
+
+-- Side panels (e.g. neo-tree's).
+groups.NeoTreeNormal = {bg = ui.panel}
+groups.NeoTreeNormalNC = {link = "NeoTreeNormal"}
+groups.NeoTreeSignColumn = {link = "NeoTreeNormal"}
+groups.NeoTreeCursorLine = {bg = ui.current_bg}
+
+-- Directories.
+groups.Directory = {fg = file.directory, bold = true}
+groups.NeoTreeDirectoryName = {link = "Directory"}
+groups.NeoTreeDirectoryIcon = {fg = file.directory}
+
+-- Version control, and diffs.
+groups.GitSignsAdd = {fg = git.added}
+groups.GitSignsChange = {fg = git.modified}
+groups.GitSignsDelete = {fg = git.deleted}
+groups.SignifySignAdd = {link = "GitSignsAdd"}
+groups.SignifySignChange = {link = "GitSignsChange"}
+groups.SignifySignDelete = {link = "GitSignsDelete"}
+groups.NeoTreeGitAdded = {fg = git.added}
+groups.NeoTreeGitStaged = {fg = git.added}
+groups.NeoTreeGitModified = {fg = git.modified}
+groups.NeoTreeGitRenamed = {fg = git.modified}
+groups.NeoTreeGitDeleted = {fg = git.deleted}
+groups.NeoTreeGitUntracked = {fg = git.untracked}
+groups.DiffAdd = {bg = diff.added}
+groups.DiffChange = {bg = diff.changed}
+groups.DiffDelete = {bg = diff.deleted}
+
+-- Diagnostics.
+for name, color in pairs({
+  Error = diagnostics.error,
+  Warn = diagnostics.warning,
+  Info = diagnostics.info,
+  Hint = diagnostics.hint,
+  Ok = diagnostics.ok,
+}) do
+  groups["Diagnostic" .. name] = {fg = color}
+  groups["DiagnosticSign" .. name] = {fg = color}
+  groups["DiagnosticVirtualText" .. name] = {fg = color}
+  groups["DiagnosticUnderline" .. name] = {undercurl = true, sp = color}
+end
+
+-- Don't give markdown code blocks a background. render-markdown links this to
+-- ColorColumn, which virt-column clears when it loads, so otherwise the result
+-- depends on which loads first. This links to render-markdown's empty group
+-- since a group with no attributes doesn't count as set, and render-markdown
+-- would still link it.
+groups.RenderMarkdownCode = {link = "RenderMarkdownPadding"}
+
+-- The groups the icons use (see the icons module), one for each of their colors.
+{% for name, color in icon_colors.items() %}
+groups.Icons{{ name.title().replace('_', '').replace('.', '') }} = {fg = "{{ color }}"}
+{% endfor %}

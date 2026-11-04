@@ -251,7 +251,12 @@ def build(
   env.filters |= {"ord": ord, "lua_string": lua_string}
   env.filters |= {"sgr": sgr, "eza": eza, "tmux": tmux, "zsh": zsh, "git": git}
   env.filters |= {"fzf": fzf, "used": used}
-  names = {name.removesuffix(".jinja") for name in env.list_templates()}
+  # Templates starting with _ are only included by others, so aren't built.
+  names = {
+    name.removesuffix(".jinja")
+    for name in env.list_templates()
+    if not name.startswith("_")
+  }
   if flat:
     paths = {name: pathlib.PurePosixPath(name) for name in names}
   else:

@@ -1,0 +1,24 @@
+{#
+The locals at the top of an nvim style's colorscheme: the theme's colors and
+roles that its body (rendered first, as `body`) uses, so that nothing unused is
+defined.
+#}
+-- The theme's colors.
+{% set used_colors = colors | used(body, "colors") %}
+{% if used_colors %}
+local colors = {
+{% for name, color in used_colors.items() %}
+  {{ name }} = "{{ color }}",
+{% endfor %}
+}
+{% endif %}
+{% for group, entries in roles.items() %}
+{% set used_entries = entries | used(body, group) %}
+{% if used_entries %}
+local {{ group }} = {
+{% for name, color in used_entries.items() %}
+  {{ name }} = "{{ color }}",
+{% endfor %}
+}
+{% endif %}
+{% endfor %}

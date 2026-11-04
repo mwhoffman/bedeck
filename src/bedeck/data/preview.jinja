@@ -14,8 +14,23 @@ background color, and bold. A literal [ is written \[.
 {% endfor %}
 
 [bold]Accents[/]
-{% for name in colors if name not in ansi and name[:2] not in ('bg', 'fg') and not name.startswith('bright_') %}
+{# The theme's other colors: those with a bright variant beside it, then the
+   rest two to a line. Colors that are also a background or text step are left
+   to the next section. #}
+{% set steps = [] %}
+{% for suffix in ['_hard', '0', '1', '2', '3', '4'] %}
+{% set _ = steps.extend([colors['bg' ~ suffix], colors['fg' ~ suffix]]) %}
+{% endfor %}
+{% set paired, single = [], [] %}
+{% for name in colors if name not in ansi and name[:2] not in ('bg', 'fg') and not name.startswith('bright_') and colors[name] not in steps %}
+{% set _ = (paired if 'bright_' ~ name in colors else single).append(name) %}
+{% endfor %}
+{% for name in paired %}
   {{ swatch(name, colors[name]) }}    {{ swatch('bright_' ~ name, colors['bright_' ~ name]) }}
+{% endfor %}
+{% for pair in single | batch(2) %}
+  {{ swatch(pair[0], colors[pair[0]]) }}{% if pair | length > 1 %}    {{ swatch(pair[1], colors[pair[1]]) }}{% endif %}
+
 {% endfor %}
 
 [bold]Background and foreground[/]
