@@ -1,5 +1,5 @@
 {#
-The nvim colorscheme "bedeck", in the gruvbox style: gruvbox.nvim's highlight
+The nvim colorscheme "theme", in the gruvbox style: gruvbox.nvim's highlight
 groups, with the theme's colors, and with some groups set from the theme's roles.
 #}
 -- The highlight groups are those of gruvbox.nvim
@@ -54,7 +54,7 @@ local config = {
 if vim.g.colors_name then
   vim.cmd.hi("clear")
 end
-vim.g.colors_name = "bedeck"
+vim.g.colors_name = "theme"
 vim.o.termguicolors = true
 vim.o.background = "{{ background }}"
 
@@ -1254,7 +1254,7 @@ end
 -- would still link it.
 groups.RenderMarkdownCode = {link = "RenderMarkdownPadding"}
 
--- The groups the icons use (see bedeck.icons), one for each of their colors.
+-- The groups the icons use (see theme.icons), one for each of their colors.
 {% for name, color in icon_colors.items() %}
 groups.Icons{{ name.title().replace('_', '').replace('.', '') }} = {fg = "{{ color }}"}
 {% endfor %}
