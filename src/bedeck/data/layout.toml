@@ -1,0 +1,17 @@
+# Where `bedeck build` writes each file it builds (named for its template, e.g.
+# tmux-colors.conf.jinja), relative to the output directory. With the output
+# directory as the home directory (e.g. a stow package), these are where each
+# tool, or its config, finds them. A layout given with --layout is applied on
+# top of this one, and can set a file to false to skip it.
+
+"dircolors" = ".dircolors"
+"eza.yml" = ".config/eza/theme.yml"
+"fzf" = ".config/fzf/theme"
+"ghostty" = ".config/ghostty/theme"
+"git" = ".config/git/colors"
+"nvim.lua" = ".config/nvim/colors/theme.lua"
+"nvim-icons.lua" = ".config/nvim/lua/theme/icons.lua"
+"nvim-lualine.lua" = ".config/nvim/lua/lualine/themes/theme.lua"
+"quickshell.json" = ".config/quickshell/config.json"
+"tmux-colors.conf" = ".config/tmux/colors.conf"
+"zsh.zsh" = ".config/zsh/theme.zsh"

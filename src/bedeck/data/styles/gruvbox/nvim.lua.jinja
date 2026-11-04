@@ -1254,7 +1254,7 @@ end
 -- would still link it.
 groups.RenderMarkdownCode = {link = "RenderMarkdownPadding"}
 
--- The groups the icons use (see theme.icons), one for each of their colors.
+-- The groups the icons use (see the icons module), one for each of their colors.
 {% for name, color in icon_colors.items() %}
 groups.Icons{{ name.title().replace('_', '').replace('.', '') }} = {fg = "{{ color }}"}
 {% endfor %}

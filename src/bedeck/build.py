@@ -1,10 +1,10 @@
 """Build the theme files, by rendering each of the package's templates."""
 
+import os
 import pathlib
 import re
 
 import jinja2
-import rich.prompt
 
 import bedeck.errors
 import bedeck.icons
@@ -14,6 +14,9 @@ import bedeck.theme
 # bedeck's templates, and its styles: each is a directory of templates.
 TEMPLATES = pathlib.Path(__file__).parent / "data/templates"
 STYLES = pathlib.Path(__file__).parent / "data/styles"
+
+# Where each built file goes in the output directory, by default.
+LAYOUT = pathlib.Path(__file__).parent / "data/layout.toml"
 
 
 def eza_filenames(icons: bedeck.icons.Icons) -> dict[str, bedeck.icons.Icon]:
@@ -126,17 +129,94 @@ def is_dark(theme: bedeck.theme.Theme) -> bool:
   return brightness(ui["background"]) < brightness(ui["text"])
 
 
+def is_inside(path: str) -> bool:
+  """Whether a path (from a layout) stays inside the directory it's relative
+  to: it isn't absolute, empty or ".", and has no ".." in it."""
+  pure = pathlib.PurePosixPath(path)
+  return not pure.is_absolute() and pure.parts != () and ".." not in pure.parts
+
+
+def layout(
+  names: set[str],
+  path: pathlib.Path | None,
+) -> dict[str, pathlib.PurePosixPath]:
+  """Where each of the named files (e.g. eza.yml) goes, relative to the output
+  directory: bedeck's layout, with the given one (if any) applied on top. A file
+  either sets to false is skipped, so it's left out."""
+  paths: dict[str, pathlib.PurePosixPath | None] = {}
+  errors = []
+  for source in (LAYOUT, path):
+    if source is None:
+      continue
+    for name, value in bedeck.theme.read_toml(source).items():
+      if name not in names:
+        errors.append(f"{source}: {name}: isn't one of the files built")
+      elif value is False:
+        paths[name] = None
+      elif isinstance(value, str) and is_inside(value):
+        paths[name] = pathlib.PurePosixPath(value)
+      else:
+        errors.append(
+          f"{source}: {name}: expected a path inside the output directory, or "
+          "false to skip it"
+        )
+  errors += [f"{LAYOUT}: {name}: missing" for name in sorted(names - paths.keys())]
+  chosen = {name: where for name, where in paths.items() if where is not None}
+  owners = {}  # the file going to each path
+  for name, where in sorted(chosen.items()):
+    if where in owners:
+      errors.append(f"{owners[where]} and {name} both go to {where}")
+    owners[where] = name
+  for name, where in sorted(chosen.items()):
+    for parent in where.parents:
+      if parent in owners:
+        errors.append(f"{name} goes inside {parent}, which is {owners[parent]}")
+  if errors:
+    raise bedeck.errors.BedeckError(
+      "errors in the layout:\n  " + "\n  ".join(errors)
+    )
+  return chosen
+
+
+def extra_files(
+  output: pathlib.Path,
+  built: set[pathlib.PurePosixPath],
+) -> list[pathlib.PurePosixPath]:
+  """The files in the output directory (relative to it) that aren't among those
+  built, e.g. ones left from an older layout. Links count as files, and aren't
+  followed; .git directories are skipped."""
+  extra = []
+  for root, dirs, files in os.walk(output):
+    dirs[:] = [name for name in dirs if name != ".git"]
+    relative = pathlib.PurePosixPath(pathlib.Path(root).relative_to(output))
+    # os.walk lists links to directories as directories, but doesn't go in.
+    links = [name for name in dirs if (pathlib.Path(root) / name).is_symlink()]
+    extra += [
+      relative / name
+      for name in files + links
+      if relative / name not in built
+    ]
+  return sorted(extra)
+
+
 def build(
   icons: pathlib.Path | None,
   theme: pathlib.Path,
   style: str,
   output: pathlib.Path,
-  yes: bool,
+  layout_file: pathlib.Path | None = None,
+  flat: bool = False,
+  dry_run: bool = False,
 ) -> None:
-  """Render each template (e.g. eza.yml.jinja) to the output directory (as
-  eza.yml), asking before overwriting a file unless `yes`. The templates are
-  bedeck's and those of the style, which is how the colors are arranged in e.g.
-  an editor. They all get the same context, and use what they need of it."""
+  """Render each template (e.g. eza.yml.jinja) as a file (eza.yml), and write
+  it to the output directory: where the layout puts it, or straight into the
+  directory if `flat`. Files that are already up to date are left alone, and
+  files in the directory that weren't built are listed but not removed. If
+  `dry_run`, only print what would be written.
+
+  The templates are bedeck's and those of the style, which is how the colors
+  are arranged in e.g. an editor. They all get the same context, and use what
+  they need of it."""
   styles = {path.name: path for path in STYLES.iterdir() if path.is_dir()}
   if style not in styles:
     raise bedeck.errors.BedeckError(
@@ -171,19 +251,30 @@ def build(
   env.filters |= {"ord": ord, "lua_string": lua_string}
   env.filters |= {"sgr": sgr, "eza": eza, "tmux": tmux, "zsh": zsh, "git": git}
   env.filters |= {"fzf": fzf, "used": used}
+  names = {name.removesuffix(".jinja") for name in env.list_templates()}
+  if flat:
+    paths = {name: pathlib.PurePosixPath(name) for name in names}
+  else:
+    paths = layout(names, layout_file)
   # Render them all first, so a problem with one leaves nothing half built.
   files = {
-    output / name.removesuffix(".jinja"): env.get_template(name).render(context)
-    for name in env.list_templates()
+    where: env.get_template(name + ".jinja").render(context)
+    for name, where in sorted(paths.items(), key=lambda item: item[1])
   }
-  output.mkdir(parents=True, exist_ok=True)
-  for path, text in files.items():
-    if path.exists():
-      if path.read_bytes() == text.encode("utf-8"):
-        print(f"Unchanged {path}")
-        continue
-      if not yes and not rich.prompt.Confirm.ask(f"Overwrite {path}?"):
-        print(f"Skipped {path}")
-        continue
-    path.write_text(text, encoding="utf-8")
+  for where, text in files.items():
+    path = output / where
+    if path.is_file() and path.read_bytes() == text.encode("utf-8"):
+      print(f"Unchanged {path}")
+      continue
+    if dry_run:
+      print(f"Would write {path}")
+      continue
+    try:
+      path.parent.mkdir(parents=True, exist_ok=True)
+      path.write_text(text, encoding="utf-8")
+    except OSError as error:
+      raise bedeck.errors.BedeckError(f"can't write {path}: {error}") from error
     print(f"Wrote {path}")
+  if output.is_dir():
+    for where in extra_files(output, set(files)):
+      print(f"Not built (left as is): {output / where}")
